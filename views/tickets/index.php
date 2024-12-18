@@ -63,13 +63,13 @@ $this->title = 'คำร้องทั้งหมด';
                 'template' => Yii::$app->user->identity->role === 'admin' ? '{view} {update} {delete}' : '{view}',
                 'buttons' => [
                     'view' => function ($url, $model) {
-                        return Html::a('<i class="bi bi-eye"></i>', $url, ['class' => 'btn btn-primary btn-sm']);
+                        return Html::a('<i class="bi bi-eye"></i> ดู', $url, ['class' => 'btn btn-primary btn-sm']);
                     },
                     'update' => function ($url, $model) {
-                        return Html::a('<i class="bi bi-pencil"></i>', $url, ['class' => 'btn btn-warning btn-sm']);
+                        return Html::a('<i class="bi bi-pencil"></i> แก้ไข', $url, ['class' => 'btn btn-warning btn-sm']);
                     },
                     'delete' => function ($url, $model) {
-                        return Html::a('<i class="bi bi-trash"></i>', $url, [
+                        return Html::a('<i class="bi bi-trash"></i> ลบ', $url, [
                             'class' => 'btn btn-danger btn-sm',
                             'data-method' => 'post',
                             'data-confirm' => 'คุณต้องการลบคำร้องนี้หรือไม่?',

@@ -35,8 +35,8 @@ $this->title = 'ผู้ใช้งานทั้งหมด';
             'id',
             'name',
             'email:email',
-            'password',
-            'role',
+            //'password',
+            //'role',
             //'created_at',
             //'updated_at',
             [

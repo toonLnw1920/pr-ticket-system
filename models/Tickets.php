@@ -43,7 +43,12 @@ class Tickets extends \yii\db\ActiveRecord
             [['title', 'description', 'category'], 'required'],
             [['description'], 'string'],
             [['created_at'], 'date', 'format' => 'php:Y-m-d'],
-            [['attachments'], 'file', 'extensions' => 'jpg, jpeg, png, pdf, doc, docx', 'maxFiles' => 5],
+            [['uploadedFiles'], 'file', 
+                'skipOnEmpty' => true, // อนุญาตให้ไม่อัปโหลดไฟล์ได้
+                'extensions' => 'jpg, jpeg, png, pdf, doc, docx', 
+                'maxFiles' => 5, // จำนวนไฟล์สูงสุดที่อัปโหลดได้
+                'maxSize' => 1024 * 1024 * 10, // ขนาดไฟล์สูงสุด (10MB)
+            ],
         ];
     }
 

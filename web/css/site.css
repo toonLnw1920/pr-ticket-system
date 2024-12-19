@@ -88,6 +88,28 @@ a.desc:after {
 }
 
 /* Sidebar */
+.sidebar-heading {
+    background-color: #a73b24; /* ใช้สีแดงเดียวกับ Navbar */
+    color: white; /* สีตัวอักษร */
+    padding: 10px; /* เว้นระยะห่าง */
+    text-align: center; /* จัดข้อความให้อยู่กลาง */
+    font-weight: bold; /* ทำให้ตัวอักษรหนา */
+    font-size: 1.25rem; /* ปรับขนาดตัวอักษร */
+    margin-bottom: auto; /* เพิ่มระยะห่างด้านล่าง */
+    
+}
+
+.sidebar-divider {
+    background-color: dark; /* สีพื้นหลังส่วนข้อความ */
+    color: #848b93;
+    padding: 10px 10px; /* ระยะห่างภายใน */
+    text-align: center; /* จัดข้อความให้อยู่ตรงกลาง */
+    font-size: 1rem; /* ขนาดตัวอักษรที่เหมาะสม */
+    font-weight: bold; /* ทำให้ตัวอักษรหนา */
+    letter-spacing: 0.5px; /* ระยะห่างระหว่างตัวอักษร */
+    margin-bottom: 20px; /* เพิ่มระยะห่างด้านล่าง */
+}
+
 #wrapper {
     display: flex;
     flex-direction: row;
@@ -127,12 +149,15 @@ a.desc:after {
 }
 
 .list-group-item {
-    border: none;
+    border-top: 1px solid #495057; /* เส้นแบ่งด้านบน */
+    border-bottom: none; /* ไม่มีเส้นแบ่งด้านล่าง */
+    transition: all 0.3s ease; /* เพิ่ม transition */
 }
 
 .list-group-item:hover {
-    background-color: #343a40;
-    color: #fff;
+    background-color: #6c757d; /* เปลี่ยนสีพื้นหลังเมื่อ Hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* เพิ่มเงา */
+    color: #ffffff; /* สีตัวอักษรเมื่อ Hover */
 }
 
 @media (max-width: 768px) {
@@ -159,8 +184,6 @@ a.desc:after {
     background-color: #727272; /* สีเมื่อ hover */
     color: white;
 }
-
-
 
 /* แบบฟอร์ม */
 .tickets-form {

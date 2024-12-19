@@ -37,8 +37,11 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
     <div class="d-flex" id="wrapper">
         <!-- Sidebar -->
         <div id="sidebar-wrapper" class="bg-dark">
-            <div class="sidebar-heading text-center py-4 text-white">
+            <div class="sidebar-heading">
                 <?= Html::a('KKU P.R.T.S', ['/tickets/index'], ['class' => 'text-white text-decoration-none']) ?>
+            </div>
+            <div class="sidebar-divider">
+                <small>ระบบส่งคำร้องประชาสัมพันธ์</small>
             </div>
             <div class="list-group list-group-flush">
                 <?php if (!Yii::$app->user->isGuest): ?>

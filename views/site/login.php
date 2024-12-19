@@ -2,31 +2,34 @@
 
 /** @var yii\web\View $this */
 /** @var yii\bootstrap5\ActiveForm $form */
-
 /** @var app\models\LoginForm $model */
 
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 
-$this->title = 'Login';
-
+$this->title = 'Log In';
+$this->registerCssFile('@web/css/login.css', ['depends' => [\yii\bootstrap5\BootstrapAsset::class]]);
 ?>
 <div class="site-login">
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="login-container">
+        <h1 class="text-center mb-4"><?= Html::encode($this->title) ?></h1>
+        
+        <?php $form = ActiveForm::begin([
+            'id' => 'login-form',
+        ]); ?>
 
-    <p>Please fill out the following fields to login:</p>
+        <?= $form->field($model, 'email', [
+            'inputOptions' => ['class' => 'form-control', 'placeholder' => 'Enter your email'],
+        ]) ?>
 
-    <?php $form = ActiveForm::begin([
-        'id' => 'login-form',
-    ]); ?>
+        <?= $form->field($model, 'password', [
+            'inputOptions' => ['class' => 'form-control', 'placeholder' => 'Enter your password'],
+        ])->passwordInput() ?>
 
-    <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
+        <div class="form-group mt-4 text-center">
+            <?= Html::submitButton('Login', ['class' => 'btn btn-custom btn-lg w-100 text-white', 'name' => 'login-button']) ?>
+        </div>
 
-    <?= $form->field($model, 'password')->passwordInput() ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Login', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
+        <?php ActiveForm::end(); ?>
     </div>
-
-    <?php ActiveForm::end(); ?>
 </div>

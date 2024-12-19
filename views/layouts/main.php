@@ -38,11 +38,12 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         <!-- Sidebar -->
         <div id="sidebar-wrapper" class="bg-dark">
             <div class="sidebar-heading">
-                <?= Html::a('KKU P.R.T.S', ['/tickets/index'], ['class' => 'text-white text-decoration-none']) ?>
+                <?= Html::a('KKU P.R.T.S', [''], ['class' => 'text-white text-decoration-none']) ?>
             </div>
             <div class="sidebar-divider">
                 <small>ระบบส่งคำร้องประชาสัมพันธ์</small>
             </div>
+
             <div class="list-group list-group-flush">
                 <?php if (!Yii::$app->user->isGuest): ?>
                     <?php if (Yii::$app->user->identity->role === 'admin'): ?>

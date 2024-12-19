@@ -1,5 +1,5 @@
 main > .container {
-    padding: 70px 15px 20px;
+    /*padding: 70px 15px 20px;*/
 }
 
 .footer {
@@ -149,9 +149,15 @@ a.desc:after {
 }
 
 .list-group-item {
-    border-top: 1px solid #495057; /* เส้นแบ่งด้านบน */
-    border-bottom: none; /* ไม่มีเส้นแบ่งด้านล่าง */
-    transition: all 0.3s ease; /* เพิ่ม transition */
+    display: flex;
+    align-items: center;
+    gap: 10px; /* เพิ่มช่องว่างระหว่างไอคอนกับข้อความ */
+    font-size: 1rem; /* ขนาดตัวอักษร */
+    color: #f8f9fa; /* สีข้อความ */
+    background-color: #343a40; /* สีพื้นหลัง */
+    border: none; /* ลบเส้นขอบ */
+    padding: 10px 15px; /* ระยะห่างภายใน */
+    transition: all 0.3s ease-in-out; /* เพิ่ม transition */
 }
 
 .list-group-item:hover {

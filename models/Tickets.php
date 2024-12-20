@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use yii\web\UploadedFile;
+
 /**
  * This is the model class for table "tickets".
  *
@@ -43,9 +44,11 @@ class Tickets extends \yii\db\ActiveRecord
             [['title', 'description', 'category'], 'required'],
             [['description'], 'string'],
             [['created_at'], 'date', 'format' => 'php:Y-m-d'],
-            [['uploadedFiles'], 'file', 
+            [
+                ['uploadedFiles'],
+                'file',
                 'skipOnEmpty' => true, // อนุญาตให้ไม่อัปโหลดไฟล์ได้
-                'extensions' => 'jpg, jpeg, png, pdf, doc, docx', 
+                'extensions' => 'jpg, jpeg, png, pdf, doc, docx',
                 'maxFiles' => 5, // จำนวนไฟล์สูงสุดที่อัปโหลดได้
                 'maxSize' => 1024 * 1024 * 10, // ขนาดไฟล์สูงสุด (10MB)
             ],
@@ -83,6 +86,18 @@ class Tickets extends \yii\db\ActiveRecord
         }
         $this->updated_at = date('Y-m-d H:i:s'); // วันที่แก้ไข
         return parent::beforeSave($insert);
+    }
+
+    public function getCategoryLabel()
+    {
+        $categories = [
+            'news' => 'ข่าว',
+            'design' => 'ออกแบบ',
+            'photo' => 'ถ่ายภาพ',
+            'media' => 'ทำสื่อ',
+        ];
+
+        return $categories[$this->category] ?? $this->category; // แปลงค่า หรือแสดงค่าดั้งเดิมหากไม่มีการกำหนด
     }
 
     /**

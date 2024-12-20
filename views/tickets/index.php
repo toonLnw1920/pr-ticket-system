@@ -41,11 +41,15 @@ $this->title = 'คำร้องทั้งหมด';
             ],
             [
                 'attribute' => 'category',
+                'label' => 'หมวดหมู่',
+                'value' => function ($model) {
+                    return $model->getCategoryLabel(); // แปลงค่าภาษาอังกฤษเป็นภาษาไทย
+                },
                 'contentOptions' => ['style' => 'text-align: center;'],
             ],
             [
                 'attribute' => 'status',
-           
+
                 'content' => function ($model) {
                     return Html::tag('span', Html::encode($model->status), [
                         'class' => $model->status === 'approved' ? 'badge bg-success' : 'badge bg-secondary',

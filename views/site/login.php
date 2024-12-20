@@ -13,9 +13,12 @@ $this->registerCssFile('@web/css/login.css', ['depends' => [\yii\bootstrap5\Boot
 <div class="site-login">
     <div class="login-container">
         <h1 class="text-center mb-4"><?= Html::encode($this->title) ?></h1>
-        
+
         <?php $form = ActiveForm::begin([
             'id' => 'login-form',
+            'fieldConfig' => [
+                'template' => "{label}\n{input}\n{error}", // ไม่แสดงไอคอน
+            ],
         ]); ?>
 
         <?= $form->field($model, 'email', [

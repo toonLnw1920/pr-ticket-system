@@ -73,7 +73,7 @@ $this->title = 'Dashboard';
                         <tr>
                             <td><?= Html::encode($ticket->id) ?></td>
                             <td><?= Html::encode($ticket->title) ?></td>
-                            <td><?= Html::encode($ticket->category) ?></td>
+                            <td><?= Html::encode($ticket->getCategoryLabel()) ?></td>
                             <td>
                                 <span class="badge bg-<?= $ticket->status === 'completed' ? 'success' : ($ticket->status === 'pending' ? 'warning' : 'info') ?>">
                                     <?= Html::encode($ticket->status) ?>

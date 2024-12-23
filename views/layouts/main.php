@@ -50,7 +50,6 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
                         <!-- Sidebar สำหรับ Admin -->
                         <?= Html::a('Dashboard', ['/site/dashboard'], ['class' => 'list-group-item list-group-item-action bg-dark text-white']) ?>
                         <?= Html::a('จัดการคำร้อง', ['/tickets/index'], ['class' => 'list-group-item list-group-item-action bg-dark text-white']) ?>
-                        <?= Html::a('จัดการผู้ใช้งาน', ['/users/index'], ['class' => 'list-group-item list-group-item-action bg-dark text-white']) ?>
                         <?= Html::a('Reports', ['/site/reports'], ['class' => 'list-group-item list-group-item-action bg-dark text-white']) ?>
                     <?php else: ?>
                         <!-- Sidebar สำหรับ User -->
@@ -66,31 +65,51 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 
         <!-- Page Content -->
         <div id="page-content-wrapper" class="w-100">
+
             <!-- Header -->
-            <nav class="navbar navbar-expand-lg" style="background-color: #a73b24; color: white;">
+            <nav class="navbar navbar-expand-lg" style="background-color: #a73b24;">
                 <div class="container-fluid">
-                    <button class="btn" id="sidebarToggle">☰</button>
-                    <!-- <a class="navbar-brand ms-2" href="<?= Yii::$app->homeUrl ?>">My Application</a>-->
+                    <div class="d-flex align-items-center">
+                        <button class="btn" id="sidebarToggle">☰</button>
+                        <?php if (!Yii::$app->user->isGuest): ?>
+                            <span class="d-lg-none ms-2 text-white user-mobile">
+                                <?= Html::encode(Yii::$app->user->identity->name) ?>
+                            </span>
+                        <?php endif; ?>
+                    </div>
 
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav ms-auto">
                             <?php if (!Yii::$app->user->isGuest): ?>
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <a class="nav-link dropdown-toggle text-white d-none d-lg-block" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <?= Html::encode(Yii::$app->user->identity->name) ?>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                         <li><?= Html::a('Profile', ['/site/profile'], ['class' => 'dropdown-item']) ?></li>
-                                        <li><?= Html::a('Logout', ['/site/logout'], ['class' => 'dropdown-item', 'data-method' => 'post']) ?></li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li>
+                                            <?= Html::a('Logout', ['/site/logout'], [
+                                                'class' => 'dropdown-item',
+                                                'data' => ['method' => 'post']
+                                            ]) ?>
+                                        </li>
                                     </ul>
                                 </li>
                             <?php else: ?>
                                 <li class="nav-item">
-                                    <?= Html::a('Login', ['/site/login'], ['class' => 'btn', 'style' => 'color: white;']) ?>
+                                    <?= Html::a('Login', ['/site/login'], ['class' => 'btn text-white']) ?>
                                 </li>
                             <?php endif; ?>
                         </ul>
                     </div>
+
+                    <!-- Mobile Menu Toggle -->
+                    <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fas fa-ellipsis-v text-white"></i>
+                    </button>
                 </div>
             </nav>
 
@@ -107,8 +126,14 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 
     <!-- JavaScript for Sidebar Toggle -->
     <script>
-        document.getElementById("sidebarToggle").addEventListener("click", function() {
-            document.getElementById("wrapper").classList.toggle("toggled");
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const wrapper = document.getElementById('wrapper');
+
+            sidebarToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                wrapper.classList.toggle('toggled');
+            });
         });
     </script>
 

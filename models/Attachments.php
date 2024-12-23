@@ -19,6 +19,8 @@ use Yii;
  */
 class Attachments extends \yii\db\ActiveRecord
 {
+    public $uploadedFiles; // เพิ่ม property สำหรับเก็บไฟล์ที่อัปโหลด
+
     /**
      * {@inheritdoc}
      */
@@ -40,8 +42,10 @@ class Attachments extends \yii\db\ActiveRecord
             [['file_path'], 'string', 'max' => 255],
             [['ticket_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tickets::class, 'targetAttribute' => ['ticket_id' => 'id']],
             [['comment_id'], 'exist', 'skipOnError' => true, 'targetClass' => Comments::class, 'targetAttribute' => ['comment_id' => 'id']],
+            [['uploadedFiles'], 'file', 'skipOnEmpty' => true, 'extensions' => 'jpg, png, pdf', 'maxFiles' => 5],
         ];
     }
+
 
     /**
      * {@inheritdoc}

@@ -171,18 +171,55 @@ class TicketsController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $attachmentModel = new Attachments();
 
         // ตรวจสอบสิทธิ์เฉพาะเจ้าของหรือ admin
         if (Yii::$app->user->identity->role !== 'admin' && $model->user_id !== Yii::$app->user->id) {
             throw new ForbiddenHttpException('คุณไม่มีสิทธิ์แก้ไขคำร้องนี้');
         }
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+        if ($model->load($this->request->post()) && $model->save()) {
+            // จัดการไฟล์ที่อัปโหลด
+            $uploadedFiles = \yii\web\UploadedFile::getInstances($attachmentModel, 'uploadedFiles');
+
+            if ($uploadedFiles) {
+                $uploadPath = Yii::getAlias('@webroot/uploads/');
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0777, true);
+                }
+
+                foreach ($uploadedFiles as $file) {
+                    $fileName = $file->baseName . '.' . $file->extension;
+
+                    // ตรวจสอบว่าไฟล์ซ้ำหรือไม่
+                    $counter = 1;
+                    while (file_exists($uploadPath . $fileName)) {
+                        $fileName = $file->baseName . '_' . $counter . '.' . $file->extension;
+                        $counter++;
+                    }
+
+                    $filePath = $uploadPath . $fileName;
+
+                    if ($file->saveAs($filePath)) {
+                        $attachment = new Attachments();
+                        $attachment->ticket_id = $model->id;
+                        $attachment->file_path = 'uploads/' . $fileName;
+                        $attachment->file_type = $file->extension;
+                        $attachment->uploaded_at = date('Y-m-d H:i:s');
+                        $attachment->save();
+                    } else {
+                        Yii::$app->session->setFlash('error', 'ไม่สามารถอัปโหลดไฟล์ได้');
+                    }
+                }
+            }
+
+            Yii::$app->session->setFlash('success', 'อัปเดตคำร้องสำเร็จ!');
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
             'model' => $model,
+            'attachmentModel' => $attachmentModel,
         ]);
     }
 

@@ -170,37 +170,119 @@ a.desc:after {
     color: #ffffff; /* สีตัวอักษรเมื่อ Hover */
 }
 
-@media (max-width: 992px) {
-    #sidebar-wrapper {
-        margin-left: -250px;
-    }
-
-    #wrapper.toggled #sidebar-wrapper {
-        margin-left: 0;
-    }
-
-    #page-content-wrapper {
-        margin-left: 0;
-        width: 100%;
-    }
-    
-    .navbar .nav-link {
-        font-size: 1rem;
-        text-align: center;
-    }
-    .navbar .dropdown-menu {
-        text-align: center;
-    }
+/* Navbar Styles */
+.navbar {
+    padding: 0.5rem 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+.navbar .container-fluid {
+    padding: 0 15px;
+}
+
+/* Sidebar Toggle Button */
 #sidebarToggle {
-    color: white; /* สีตัวอักษรหรือไอคอน */
-    border: none; /* ลบเส้นขอบ */
+    color: white;
+    border: none;
+    padding: 0.5rem;
+    background: transparent;
+    transition: background-color 0.2s ease;
 }
 
 #sidebarToggle:hover {
-    background-color: #727272; /* สีเมื่อ hover */
-    color: white;
+    background-color: rgba(255,255,255,0.1);
+    border-radius: 4px;
+}
+
+/* User Display Styles */
+.user-mobile {
+    font-size: 0.9rem;
+    font-weight: 500;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Dropdown Styles */
+.dropdown-menu {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    margin-top: 0.5rem;
+}
+
+.dropdown-item {
+    padding: 0.5rem 1.5rem;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.dropdown-divider {
+    margin: 0.5rem 0;
+    opacity: 0.1;
+}
+
+/* Mobile Styles */
+@media (max-width: 991px) {
+    .navbar-collapse {
+        background-color: #a73b24;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        left: 0;
+        padding: 1rem;
+        z-index: 1000;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .dropdown-menu {
+        background-color: transparent;
+        border: none;
+        box-shadow: none;
+        padding: 0.5rem 0;
+    }
+
+    .dropdown-item {
+        color: white;
+        text-align: center;
+        padding: 0.5rem;
+    }
+
+    .dropdown-item:hover {
+        background-color: rgba(255,255,255,0.1);
+        color: white;
+    }
+
+    .navbar-toggler {
+        border: none;
+        color: white;
+        padding: 0.25rem 0.5rem;
+        outline: none;
+    }
+
+    .navbar-toggler:focus {
+        box-shadow: none;
+    }
+}
+
+/* Extra Small Devices */
+@media (max-width: 575px) {
+    .navbar {
+        padding: 0.5rem;
+    }
+
+    .user-mobile {
+        font-size: 0.85rem;
+        max-width: 120px;
+    }
+
+    .dropdown-item {
+        font-size: 0.9rem;
+    }
 }
 
 /* แบบฟอร์ม */

@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+  }
+
 /* ฟอร์ม Login */
 .site-login {
     display: flex;

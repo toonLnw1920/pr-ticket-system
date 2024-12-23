@@ -73,9 +73,26 @@ class TicketsController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+
+        // ดึงข้อมูลไฟล์แนบ
+        $attachments = Attachments::find()->where(['ticket_id' => $id])->all();
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'attachments' => $attachments, // ส่งไฟล์แนบไปที่ View
         ]);
+    }
+
+    public function actionDownload($path)
+    {
+        $file = Yii::getAlias('@webroot') . '/' . $path;
+
+        if (file_exists($file)) {
+            return Yii::$app->response->sendFile($file);
+        } else {
+            throw new \yii\web\NotFoundHttpException('ไฟล์นี้ไม่มีอยู่ในระบบ.');
+        }
     }
 
     /**
@@ -84,56 +101,65 @@ class TicketsController extends Controller
      * @return string|\yii\web\Response
      */
     public function actionCreate()
-{
-    $model = new Tickets();
+    {
+        $model = new Tickets();
 
-    if ($this->request->isPost) {
-        if ($model->load($this->request->post())) {
-            // กำหนด user_id ให้เป็นผู้ใช้ที่ล็อกอิน
-            $model->user_id = Yii::$app->user->id;
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post())) {
+                // กำหนด user_id ให้เป็นผู้ใช้ที่ล็อกอิน
+                $model->user_id = Yii::$app->user->id;
 
-            // จัดการไฟล์ที่อัปโหลด
-            $uploadedFiles = \yii\web\UploadedFile::getInstances($model, 'uploadedFiles');
+                // จัดการไฟล์ที่อัปโหลด
+                $uploadedFiles = \yii\web\UploadedFile::getInstances($model, 'uploadedFiles');
 
-            if ($model->save()) {
-                // ถ้ามีไฟล์ที่อัปโหลด
-                if ($uploadedFiles) {
-                    // สร้างโฟลเดอร์ถ้ายังไม่มี
-                    $uploadPath = Yii::getAlias('@webroot/uploads/');
-                    if (!file_exists($uploadPath)) {
-                        mkdir($uploadPath, 0777, true);
-                    }
+                if ($model->save()) {
+                    // ถ้ามีไฟล์ที่อัปโหลด
+                    if ($uploadedFiles) {
+                        // สร้างโฟลเดอร์ถ้ายังไม่มี
+                        $uploadPath = Yii::getAlias('@webroot/uploads/');
+                        if (!file_exists($uploadPath)) {
+                            mkdir($uploadPath, 0777, true);
+                        }
 
-                    foreach ($uploadedFiles as $file) {
-                        // สร้างชื่อไฟล์ใหม่
-                        $newFileName = uniqid() . '_' . $file->baseName . '.' . $file->extension;
-                        // กำหนด path เต็ม
-                        $filePath = $uploadPath . $newFileName;
-                        
-                        // บันทึกไฟล์ลงโฟลเดอร์
-                        if ($file->saveAs($filePath)) {
-                            // บันทึกข้อมูลไฟล์ในตาราง attachments
-                            $attachment = new Attachments();
-                            $attachment->ticket_id = $model->id;
-                            // เก็บ path สัมพันธ์สำหรับการแสดงผล
-                            $attachment->file_path = 'uploads/' . $newFileName;
-                            $attachment->file_type = $file->extension;
-                            $attachment->uploaded_at = date('Y-m-d H:i:s');
-                            $attachment->save();
-                        } else {
-                            Yii::$app->session->setFlash('error', 'ไม่สามารถอัปโหลดไฟล์ได้');
+                        foreach ($uploadedFiles as $file) {
+                            // ใช้ชื่อไฟล์เดิม
+                            $fileName = $file->baseName . '.' . $file->extension;
+
+                            // ตรวจสอบว่าไฟล์ซ้ำหรือไม่
+                            $counter = 1;
+                            while (file_exists($uploadPath . $fileName)) {
+                                $fileName = $file->baseName . '_' . $counter . '.' . $file->extension;
+                                $counter++;
+                            }
+
+                            // กำหนด path เต็ม
+                            $filePath = $uploadPath . $fileName;
+
+                            // บันทึกไฟล์ลงโฟลเดอร์
+                            if ($file->saveAs($filePath)) {
+                                // บันทึกข้อมูลไฟล์ในตาราง attachments
+                                $attachment = new Attachments();
+                                $attachment->ticket_id = $model->id;
+                                // เก็บ path สัมพันธ์สำหรับการแสดงผล
+                                $attachment->file_path = 'uploads/' . $fileName;
+                                $attachment->file_type = $file->extension;
+                                $attachment->uploaded_at = date('Y-m-d H:i:s');
+                                $attachment->save();
+                            } else {
+                                Yii::$app->session->setFlash('error', 'ไม่สามารถอัปโหลดไฟล์ได้');
+                            }
                         }
                     }
+                    return $this->redirect(['view', 'id' => $model->id]);
                 }
-                return $this->redirect(['view', 'id' => $model->id]);
             }
         }
+
+        return $this->render('create', [
+            'model' => $model,
+        ]);
     }
 
-    return $this->render('create', [
-        'model' => $model,
-    ]);
-}
 
     /**
      * Updates an existing Tickets model.

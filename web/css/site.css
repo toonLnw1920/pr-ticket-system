@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+  }
+
 main > .container {
     /*padding: 70px 15px 20px;*/
 }
@@ -150,13 +154,13 @@ a.desc:after {
 
 .list-group-item {
     display: flex;
-    align-items: center;
-    gap: 10px; /* เพิ่มช่องว่างระหว่างไอคอนกับข้อความ */
+    align-items: center; /* จัดไอคอนและข้อความให้อยู่ตรงกลาง */
+    gap: 12px; /* เพิ่มช่องว่างระหว่างไอคอนกับข้อความ */
     font-size: 1rem; /* ขนาดตัวอักษร */
     color: #f8f9fa; /* สีข้อความ */
     background-color: #343a40; /* สีพื้นหลัง */
     border: none; /* ลบเส้นขอบ */
-    padding: 10px 15px; /* ระยะห่างภายใน */
+    padding: 12px 20px; /* เพิ่ม Padding ภายใน */
     transition: all 0.3s ease-in-out; /* เพิ่ม transition */
 }
 
@@ -166,7 +170,7 @@ a.desc:after {
     color: #ffffff; /* สีตัวอักษรเมื่อ Hover */
 }
 
-@media (max-width: 768px) {
+@media (max-width: 992px) {
     #sidebar-wrapper {
         margin-left: -250px;
     }
@@ -178,6 +182,14 @@ a.desc:after {
     #page-content-wrapper {
         margin-left: 0;
         width: 100%;
+    }
+    
+    .navbar .nav-link {
+        font-size: 1rem;
+        text-align: center;
+    }
+    .navbar .dropdown-menu {
+        text-align: center;
     }
 }
 

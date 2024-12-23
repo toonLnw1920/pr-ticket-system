@@ -5,22 +5,22 @@ use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
 /** @var app\models\Tickets $model */
+/** @var app\models\Attachments[] $attachments */
 
-$this->title = $model->title;
-//$this->params['breadcrumbs'][] = ['label' => 'Tickets', 'url' => ['index']];
+$this->title = 'รายละเอียดคำร้อง #' . $model->id;
+//$this->params['breadcrumbs'][] = ['label' => 'คำร้องทั้งหมด', 'url' => ['index']];
 //$this->params['breadcrumbs'][] = $this->title;
-\yii\web\YiiAsset::register($this);
 ?>
 <div class="tickets-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+        <?= Html::a('แก้ไข', ['update', 'id' => $model->id], ['class' => 'btn btn-warning']) ?>
+        <?= Html::a('ลบ', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
+                'confirm' => 'คุณต้องการลบคำร้องนี้หรือไม่?',
                 'method' => 'post',
             ],
         ]) ?>
@@ -30,14 +30,37 @@ $this->title = $model->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'user_id',
             'title',
+            [
+                'attribute' => 'category',
+                'value' => function ($model) {
+                    $categories = [
+                        'news' => 'ข่าว',
+                        'design' => 'ออกแบบ',
+                        'photo' => 'ถ่ายภาพ',
+                        'media' => 'ทำสื่อ',
+                    ];
+                    return $categories[$model->category] ?? 'ไม่ระบุ';
+                },
+            ],
             'description:ntext',
-            'category',
             'status',
-            'created_at',
-            'updated_at',
+            'created_at:datetime',
+            'updated_at:datetime',
         ],
     ]) ?>
+
+    <h3>ไฟล์แนบ</h3>
+    <ul>
+        <?php foreach ($attachments as $attachment): ?>
+            <li>
+                <?= Html::a(
+                    basename($attachment->file_path),
+                    ['download', 'path' => $attachment->file_path],
+                    ['class' => 'btn btn-link']
+                ) ?>
+            </li>
+        <?php endforeach; ?>
+    </ul>
 
 </div>

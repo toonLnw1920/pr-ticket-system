@@ -173,14 +173,12 @@ class TicketsController extends Controller
         $model = $this->findModel($id);
         $attachmentModel = new Attachments();
 
-        // ตรวจสอบสิทธิ์เฉพาะเจ้าของหรือ admin
         if (Yii::$app->user->identity->role !== 'admin' && $model->user_id !== Yii::$app->user->id) {
             throw new ForbiddenHttpException('คุณไม่มีสิทธิ์แก้ไขคำร้องนี้');
         }
 
         if ($model->load($this->request->post()) && $model->save()) {
-            // จัดการไฟล์ที่อัปโหลด
-            $uploadedFiles = \yii\web\UploadedFile::getInstances($attachmentModel, 'uploadedFiles');
+            $uploadedFiles = \yii\web\UploadedFile::getInstances($model, 'uploadedFiles');
 
             if ($uploadedFiles) {
                 $uploadPath = Yii::getAlias('@webroot/uploads/');
@@ -191,7 +189,7 @@ class TicketsController extends Controller
                 foreach ($uploadedFiles as $file) {
                     $fileName = $file->baseName . '.' . $file->extension;
 
-                    // ตรวจสอบว่าไฟล์ซ้ำหรือไม่
+                    // ตรวจสอบชื่อไฟล์ซ้ำ
                     $counter = 1;
                     while (file_exists($uploadPath . $fileName)) {
                         $fileName = $file->baseName . '_' . $counter . '.' . $file->extension;
@@ -206,14 +204,16 @@ class TicketsController extends Controller
                         $attachment->file_path = 'uploads/' . $fileName;
                         $attachment->file_type = $file->extension;
                         $attachment->uploaded_at = date('Y-m-d H:i:s');
-                        $attachment->save();
+                        if (!$attachment->save()) {
+                            Yii::error('Error saving attachment: ' . json_encode($attachment->errors));
+                        }
                     } else {
                         Yii::$app->session->setFlash('error', 'ไม่สามารถอัปโหลดไฟล์ได้');
                     }
                 }
             }
 
-            Yii::$app->session->setFlash('success', 'อัปเดตคำร้องสำเร็จ!');
+            Yii::$app->session->setFlash('success', 'แก้ไขคำร้องสำเร็จ!');
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -222,6 +222,7 @@ class TicketsController extends Controller
             'attachmentModel' => $attachmentModel,
         ]);
     }
+
 
     /**
      * Deletes an existing Tickets model.

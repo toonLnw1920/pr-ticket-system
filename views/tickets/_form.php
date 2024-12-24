@@ -42,16 +42,11 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
         'options' => ['class' => 'form-control', 'placeholder' => 'DD/MM/YYYY'],
     ])->label('วันที่ขอใช้บริการ') ?>
 
-    <div class="file-upload-container">
-        <?= $form->field($model, 'uploadedFiles[]')->fileInput([
-            'multiple' => true,
-            'class' => 'file-upload-input',
-            'id' => $form->getId() . '-uploadedFiles',
-        ])->label(false) ?>
-        <label for="<?= $form->getId() . '-uploadedFiles' ?>" class="file-upload-label">
-            <i class="upload-icon"></i>
-            อัปโหลดไฟล์
-        </label>
+    <!-- อัปโหลดไฟล์ -->
+    <div class="form-group">
+        <label>อัปโหลดไฟล์</label>
+        <input type="file" id="fileUpload" name="Tickets[uploadedFiles][]" multiple class="form-control">
+        <div id="fileList" class="mt-2"></div>
     </div>
 
     <!-- ปุ่มส่งคำร้อง -->

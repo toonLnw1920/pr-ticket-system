@@ -21,6 +21,7 @@ $this->registerMetaTag(['name' => 'keywords', 'content' => $this->params['meta_k
 $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii::getAlias('@web/favicon.ico')]);
 ?>
 <?php $this->beginPage() ?>
+
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>" class="h-100">
 
@@ -82,20 +83,15 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
                         <ul class="navbar-nav ms-auto">
                             <?php if (!Yii::$app->user->isGuest): ?>
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle text-white d-none d-lg-block" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <?= Html::encode(Yii::$app->user->identity->name) ?>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                         <li><?= Html::a('Profile', ['/site/profile'], ['class' => 'dropdown-item']) ?></li>
-                                        <li>
-                                            <hr class="dropdown-divider">
-                                        </li>
-                                        <li>
-                                            <?= Html::a('Logout', ['/site/logout'], [
+                                        <li><?= Html::a('Logout', ['/site/logout'], [
                                                 'class' => 'dropdown-item',
-                                                'data' => ['method' => 'post']
-                                            ]) ?>
-                                        </li>
+                                                'data-method' => 'post'
+                                            ]) ?></li>
                                     </ul>
                                 </li>
                             <?php else: ?>

@@ -139,4 +139,12 @@ class Tickets extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Users::class, ['id' => 'user_id']);
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignments()
+    {
+        return $this->hasMany(Assignments::class, ['ticket_id' => 'id']);
+    }
 }

@@ -11,6 +11,7 @@ use yii\filters\VerbFilter;
 use app\models\Attachments;
 use yii\web\ForbiddenHttpException;
 use yii\filters\AccessControl;
+use app\models\Assignments;
 
 
 /**
@@ -103,7 +104,7 @@ class TicketsController extends Controller
     public function actionCreate()
     {
         $model = new Tickets();
-
+        
         if ($this->request->isPost) {
             if ($model->load($this->request->post())) {
                 // กำหนด user_id ให้เป็นผู้ใช้ที่ล็อกอิน
@@ -252,6 +253,32 @@ class TicketsController extends Controller
      * @return Tickets the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
+
+    public function actionAssign($id)
+    {
+        $model = new Assignments();
+        $ticket = $this->findModel($id);
+
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            $model->ticket_id = $id;
+            $model->assigned_by = Yii::$app->user->id;
+            $model->assigned_at = date('Y-m-d H:i:s');
+
+            if ($model->save()) {
+                Yii::$app->session->setFlash('success', 'มอบหมายคำร้องสำเร็จ');
+                return $this->redirect(['view', 'id' => $id]);
+            } else {
+                Yii::$app->session->setFlash('error', 'ไม่สามารถมอบหมายคำร้องได้');
+            }
+        }
+
+        return $this->render('assign', [
+            'model' => $model,
+            'ticket' => $ticket,
+        ]);
+    }
+
+
     protected function findModel($id)
     {
         if (($model = Tickets::findOne(['id' => $id])) !== null) {

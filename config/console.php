@@ -13,6 +13,11 @@ $config = [
         '@npm'   => '@vendor/npm-asset',
         '@tests' => '@app/tests',
     ],
+    'controllerMap' => [
+            'rbac' => [
+                'class' => 'app\commands\RbacController',
+            ],
+        ],
     'components' => [
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -24,6 +29,9 @@ $config = [
                     'levels' => ['error', 'warning'],
                 ],
             ],
+        ],
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager',
         ],
         'db' => $db,
     ],

@@ -30,7 +30,7 @@ $this->registerCssFile('@web/css/view.css', ['depends' => [\yii\bootstrap5\Boots
         </div>
 
         <div class="row">
-            <!-- Left Section: Detail Information -->
+            <!-- ส่วนรายละเอียดคำร้อง -->
             <div class="col-md-8">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-primary text-white">รายละเอียดคำร้อง</div>
@@ -57,7 +57,7 @@ $this->registerCssFile('@web/css/view.css', ['depends' => [\yii\bootstrap5\Boots
                                     'attribute' => 'description',
                                     'format' => 'ntext',
                                     'label' => 'คำอธิบาย',
-                                    'contentOptions' => ['class' => 'text-left'], // ใช้คลาสสำหรับข้อความชิดซ้าย
+                                    'contentOptions' => ['style' => 'text-align: left; white-space: pre-wrap;'],
                                 ],
 
                                 [
@@ -103,6 +103,27 @@ $this->registerCssFile('@web/css/view.css', ['depends' => [\yii\bootstrap5\Boots
                             <p class="text-muted">ไม่มีไฟล์แนบ</p>
                         <?php endif; ?>
                     </div>
+                </div>
+            </div>
+
+            <!-- 🆕 ส่วนการมอบหมายคำร้อง -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-info text-white">การมอบหมายคำร้อง</div>
+                <div class="card-body">
+                    <?php if ($model->status === 'pending'): ?>
+                        <?= Html::a('มอบหมายคำร้อง', ['assignments/create', 'ticket_id' => $model->id], ['class' => 'btn btn-primary mb-3']) ?>
+                    <?php endif; ?>
+
+                    <h5>ประวัติการมอบหมาย</h5>
+                    <ul class="list-group">
+                        <?php foreach ($model->assignments as $assignment): ?>
+                            <li class="list-group-item">
+                                <strong>มอบหมายให้:</strong> <?= Html::encode($assignment->assignedTo->name) ?> |
+                                <strong>โดย:</strong> <?= Html::encode($assignment->assignedBy->name) ?> |
+                                <strong>สถานะ:</strong> <?= Html::encode($assignment->status) ?>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
                 </div>
             </div>
         </div>

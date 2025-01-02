@@ -12,6 +12,7 @@ use app\models\Attachments;
 use yii\web\ForbiddenHttpException;
 use yii\filters\AccessControl;
 use app\models\Assignments;
+use app\models\Users;
 
 
 /**
@@ -79,9 +80,13 @@ class TicketsController extends Controller
         // ดึงข้อมูลไฟล์แนบ
         $attachments = Attachments::find()->where(['ticket_id' => $id])->all();
 
+        // เพิ่มการดึงข้อมูล users
+        $users = Users::find()->where(['role' => 'user'])->all();
+
         return $this->render('view', [
             'model' => $model,
-            'attachments' => $attachments, // ส่งไฟล์แนบไปที่ View
+            'attachments' => $attachments,
+            'users' => $users, // ส่งตัวแปร users ไปให้ view
         ]);
     }
 
@@ -104,7 +109,7 @@ class TicketsController extends Controller
     public function actionCreate()
     {
         $model = new Tickets();
-        
+
         if ($this->request->isPost) {
             if ($model->load($this->request->post())) {
                 // กำหนด user_id ให้เป็นผู้ใช้ที่ล็อกอิน
@@ -259,6 +264,18 @@ class TicketsController extends Controller
         $model = new Assignments();
         $ticket = $this->findModel($id);
 
+        if (!$ticket) {
+            throw new NotFoundHttpException('ไม่พบคำร้องที่ต้องการ');
+        }
+
+        if (!Yii::$app->user->can('assignTicket')) {
+            throw new \yii\web\ForbiddenHttpException('❌ คุณไม่มีสิทธิ์มอบหมายคำร้องนี้');
+        }
+
+        if (Yii::$app->user->identity->role !== 'admin') {
+            throw new ForbiddenHttpException('คุณไม่มีสิทธิ์มอบหมายคำร้องนี้');
+        }
+
         if ($this->request->isPost && $model->load($this->request->post())) {
             $model->ticket_id = $id;
             $model->assigned_by = Yii::$app->user->id;
@@ -272,9 +289,12 @@ class TicketsController extends Controller
             }
         }
 
+        $users = Users::find()->where(['role' => 'user'])->all();
+
         return $this->render('assign', [
             'model' => $model,
             'ticket' => $ticket,
+            'users' => $users,
         ]);
     }
 

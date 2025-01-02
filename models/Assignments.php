@@ -38,6 +38,7 @@ class Assignments extends \yii\db\ActiveRecord
             [['ticket_id', 'assigned_to', 'assigned_by'], 'integer'],
             [['assigned_at'], 'safe'],
             [['status'], 'string'],
+            [['assigned_to'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['assigned_to' => 'id']],
         ];
     }
 

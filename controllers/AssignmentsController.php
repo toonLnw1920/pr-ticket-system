@@ -18,6 +18,7 @@ use yii\web\ForbiddenHttpException;
  */
 class AssignmentsController extends Controller
 {
+
     /**
      * @inheritDoc
      */
@@ -25,7 +26,7 @@ class AssignmentsController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::class,
+                'class' => \yii\filters\AccessControl::class,
                 'rules' => [
                     [
                         'actions' => ['index', 'view'],
@@ -35,13 +36,11 @@ class AssignmentsController extends Controller
                     [
                         'actions' => ['create', 'update', 'delete', 'assign'],
                         'allow' => true,
-                        'matchCallback' => function ($rule, $action) {
-                            return Yii::$app->user->can('assignTicket');
-                        }
+                        'roles' => ['admin'],
                     ],
                 ],
                 'denyCallback' => function ($rule, $action) {
-                    throw new ForbiddenHttpException('คุณไม่มีสิทธิ์เข้าถึงหน้านี้');
+                    throw new \yii\web\ForbiddenHttpException('❌ คุณไม่มีสิทธิ์เข้าถึงหน้านี้');
                 },
             ],
         ];
@@ -104,6 +103,9 @@ class AssignmentsController extends Controller
             throw new NotFoundHttpException('ไม่พบคำร้องที่ต้องการ');
         }
 
+        // ดึงรายชื่อผู้ใช้ที่มี role เป็น 'user'
+        $users = Users::find()->where(['role' => 'user'])->all();
+
         if ($model->load(Yii::$app->request->post())) {
             $model->ticket_id = $ticket_id;
             $model->assigned_by = Yii::$app->user->id;
@@ -115,11 +117,9 @@ class AssignmentsController extends Controller
             }
         }
 
-        $users = Users::find()->where(['role' => 'user'])->all();
-
         return $this->render('create', [
             'model' => $model,
-            'users' => $users,
+            'users' => $users, // ตรวจสอบว่ามีการส่งตัวแปรนี้
         ]);
     }
 

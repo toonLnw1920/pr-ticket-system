@@ -108,9 +108,9 @@ $this->registerCssFile('@web/css/view.css', ['depends' => [\yii\bootstrap5\Boots
 
             <!-- 🆕 ส่วนการมอบหมายคำร้อง -->
             <div class="card shadow-sm mb-4">
-                <div class="card-header bg-info text-white">การมอบหมายคำร้อง</div>
+                <div class="card-header bg-info text-white">เจ้าหน้าที่ผู้รับคำร้อง</div>
                 <div class="card-body">
-                    <?php if ($model->status === 'pending'): ?>
+                    <?php if ($model->status === 'pending' && Yii::$app->user->can('assignTicket')): ?>
                         <?= Html::a('มอบหมายคำร้อง', ['assignments/create', 'ticket_id' => $model->id], ['class' => 'btn btn-primary mb-3']) ?>
                     <?php endif; ?>
 
@@ -120,7 +120,8 @@ $this->registerCssFile('@web/css/view.css', ['depends' => [\yii\bootstrap5\Boots
                             <li class="list-group-item">
                                 <strong>มอบหมายให้:</strong> <?= Html::encode($assignment->assignedTo->name) ?> |
                                 <strong>โดย:</strong> <?= Html::encode($assignment->assignedBy->name) ?> |
-                                <strong>สถานะ:</strong> <?= Html::encode($assignment->status) ?>
+                                <strong>สถานะ:</strong> <?= Html::encode($assignment->status) ?> |
+                                <strong>วันที่มอบหมาย:</strong> <?= Html::encode($assignment->assigned_at) ?>
                             </li>
                         <?php endforeach; ?>
                     </ul>

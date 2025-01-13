@@ -42,22 +42,25 @@ class Tickets extends \yii\db\ActiveRecord
     {
         return [
             [['title', 'description', 'category'], 'required'],
+            [['user_id'], 'integer'],
             [['description'], 'string'],
-            [['created_at'], 'date', 'format' => 'php:Y-m-d'],
+            [['category'], 'string'],
+            [['status'], 'string'],
+            [['created_at', 'updated_at'], 'safe'],
+            ['status', 'default', 'value' => 'pending'],
+            ['status', 'in', 'range' => ['pending', 'approved', 'rejected', 'in_progress', 'completed']],
+            [['title'], 'string', 'max' => 255],
             [
                 ['uploadedFiles'],
                 'file',
-                'skipOnEmpty' => true, // อนุญาตให้ไม่อัปโหลดไฟล์ได้
+                'skipOnEmpty' => true,
                 'extensions' => 'jpg, jpeg, png, pdf, doc, docx',
-                'maxFiles' => 5, // จำนวนไฟล์สูงสุดที่อัปโหลดได้
-                'maxSize' => 1024 * 1024 * 10, // ขนาดไฟล์สูงสุด (10MB)
+                'maxFiles' => 5,
+                'maxSize' => 1024 * 1024 * 10,
             ],
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function attributeLabels()
     {
         return [
@@ -67,9 +70,22 @@ class Tickets extends \yii\db\ActiveRecord
             'description' => 'คำอธิบาย',
             'category' => 'หมวดหมู่',
             'status' => 'สถานะ',
-            'priority' => 'Priority',
-            'created_at' => 'วัน/เดือน/ปี',
-            'updated_at' => 'Updated At',
+            'created_at' => 'วันที่สร้าง',
+            'updated_at' => 'วันที่แก้ไข',
+        ];
+    }
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => \yii\behaviors\TimestampBehavior::class,
+                'attributes' => [
+                    \yii\db\ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    \yii\db\ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+                'value' => new \yii\db\Expression('NOW()'),
+            ],
         ];
     }
 
@@ -98,6 +114,28 @@ class Tickets extends \yii\db\ActiveRecord
         ];
 
         return $categories[$this->category] ?? $this->category; // แปลงค่า หรือแสดงค่าดั้งเดิมหากไม่มีการกำหนด
+    }
+
+    public function getStatusLabel()
+    {
+        return [
+            'pending' => 'รอการอนุมัติ',
+            'approved' => 'อนุมัติแล้ว',
+            'rejected' => 'ไม่อนุมัติ',
+            'in_progress' => 'กำลังดำเนินการ',
+            'completed' => 'เสร็จสิ้น'
+        ][$this->status] ?? $this->status;
+    }
+
+    public function getStatusBadgeClass()
+    {
+        return [
+            'pending' => 'bg-warning',
+            'approved' => 'bg-success',
+            'rejected' => 'bg-danger',
+            'in_progress' => 'bg-info',
+            'completed' => 'bg-primary'
+        ][$this->status] ?? 'bg-secondary';
     }
 
     /**

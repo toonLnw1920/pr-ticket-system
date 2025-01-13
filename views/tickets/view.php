@@ -11,152 +11,184 @@ $this->title = 'รายละเอียดคำร้อง #' . $model->id
 $this->registerCssFile('@web/css/view.css', ['depends' => [\yii\bootstrap5\BootstrapAsset::class]]);
 ?>
 
-<body>
-    <div class="container mt-4 tickets-view">
-
-        <!-- Title Section -->
-        <div class="text-center mb-4">
-            <h1>รายละเอียดคำร้อง #<?= $model->id ?></h1>
-            <p>
-                <?= Html::a('แก้ไข', ['update', 'id' => $model->id], ['class' => 'btn btn-warning me-2']) ?>
-                <?= Html::a('ลบ', ['delete', 'id' => $model->id], [
+<div class="container mt-4 tickets-view">
+    <!-- Title Section -->
+    <div class="text-center mb-4">
+        <h1><?= Html::encode($this->title) ?></h1>
+        <div class="mb-3">
+            <span class="badge <?= $model->getStatusBadgeClass() ?> p-2">
+                <i class="bi <?= $model->status === 'approved' ? 'bi-check-circle' : ($model->status === 'rejected' ? 'bi-x-circle' : ($model->status === 'in_progress' ? 'bi-gear' : ($model->status === 'completed' ? 'bi-check-square' : 'bi-clock'))) ?>"></i>
+                <?= Html::encode($model->getStatusLabel()) ?>
+            </span>
+        </div>
+        <?php if (Yii::$app->user->can('manageTickets') || Yii::$app->user->id === $model->user_id): ?>
+            <div class="action-buttons mb-3">
+                <?= Html::a('<i class="bi bi-pencil"></i> แก้ไข', ['update', 'id' => $model->id], ['class' => 'btn btn-warning me-2']) ?>
+                <?= Html::a('<i class="bi bi-trash"></i> ลบ', ['delete', 'id' => $model->id], [
                     'class' => 'btn btn-danger',
                     'data' => [
                         'confirm' => 'คุณต้องการลบคำร้องนี้หรือไม่?',
                         'method' => 'post',
                     ],
                 ]) ?>
-            </p>
+            </div>
+        <?php endif; ?>
+    </div>
+
+    <div class="row">
+        <!-- Status Management Card -->
+        <?php if (Yii::$app->user->can('manageTickets')): ?>
+            <div class="col-12 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <i class="bi bi-gear-fill me-2"></i>จัดการสถานะ
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex gap-2 flex-wrap">
+                            <?php
+                            $statuses = [
+                                'pending' => ['label' => 'รอการอนุมัติ', 'icon' => 'bi-clock', 'class' => 'btn-warning'],
+                                'approved' => ['label' => 'อนุมัติ', 'icon' => 'bi-check-circle', 'class' => 'btn-success'],
+                                'rejected' => ['label' => 'ไม่อนุมัติ', 'icon' => 'bi-x-circle', 'class' => 'btn-danger'],
+                                'in_progress' => ['label' => 'กำลังดำเนินการ', 'icon' => 'bi-gear', 'class' => 'btn-info'],
+                                'completed' => ['label' => 'เสร็จสิ้น', 'icon' => 'bi-check-square', 'class' => 'btn-primary']
+                            ];
+
+                            foreach ($statuses as $status => $info):
+                                if ($status !== $model->status):
+                            ?>
+                                    <?= Html::beginForm(['change-status', 'id' => $model->id], 'post', ['class' => 'd-inline-block mb-2']) ?>
+                                    <?= Html::hiddenInput('status', $status) ?>
+                                    <?= Html::submitButton("<i class='bi {$info['icon']}'></i> {$info['label']}", [
+                                        'class' => "btn {$info['class']}",
+                                        'data' => ['confirm' => "คุณแน่ใจหรือไม่ที่จะเปลี่ยนสถานะเป็น{$info['label']}?"]
+                                    ]) ?>
+                                    <?= Html::endForm() ?>
+                            <?php
+                                endif;
+                            endforeach;
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <!-- Ticket Details -->
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <i class="bi bi-file-text-fill me-2"></i>รายละเอียดคำร้อง
+                </div>
+                <div class="card-body">
+                    <?= DetailView::widget([
+                        'model' => $model,
+                        'attributes' => [
+                            'id',
+                            'title',
+                            [
+                                'attribute' => 'category',
+                                'value' => $model->getCategoryLabel(),
+                            ],
+                            [
+                                'attribute' => 'description',
+                                'format' => 'ntext',
+                                'contentOptions' => ['style' => 'white-space: pre-wrap;'],
+                            ],
+                            [
+                                'attribute' => 'created_at',
+                                'format' => ['datetime', 'php:d/m/Y H:i:s'],
+                            ],
+                            [
+                                'attribute' => 'updated_at',
+                                'format' => ['datetime', 'php:d/m/Y H:i:s'],
+                            ],
+                            [
+                                'label' => 'ผู้สร้างคำร้อง',
+                                'value' => $model->user->name,
+                            ],
+                        ],
+                        'options' => ['class' => 'table table-striped'],
+                    ]) ?>
+                </div>
+            </div>
         </div>
 
-        <div class="row">
-            <!-- ส่วนรายละเอียดคำร้อง -->
-            <div class="col-md-8">
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-primary text-white">รายละเอียดคำร้อง</div>
-                    <div class="card-body">
-                        <?= DetailView::widget([
-                            'model' => $model,
-                            'attributes' => [
-                                'id',
-                                'title',
-                                [
-                                    'attribute' => 'category',
-                                    'value' => function ($model) {
-                                        $categories = [
-                                            'news' => 'ข่าว',
-                                            'design' => 'ออกแบบ',
-                                            'photo' => 'ถ่ายภาพ',
-                                            'media' => 'ทำสื่อ',
-                                        ];
-                                        return $categories[$model->category] ?? 'ไม่ระบุ';
-                                    },
-                                ],
-
-                                [
-                                    'attribute' => 'description',
-                                    'format' => 'ntext',
-                                    'label' => 'คำอธิบาย',
-                                    'contentOptions' => ['style' => 'text-align: left; white-space: pre-wrap;'],
-                                ],
-
-                                [
-                                    'attribute' => 'status',
-                                    'format' => 'raw',
-                                    'value' => function ($model) {
-                                        $statusColors = [
-                                            'pending' => 'warning',
-                                            'completed' => 'success',
-                                            'in_progress' => 'info',
-                                        ];
-                                        return Html::tag('span', $model->status, [
-                                            'class' => 'badge bg-' . ($statusColors[$model->status] ?? 'secondary')
-                                        ]);
-                                    },
-                                ],
-                                'created_at:datetime',
-                                'updated_at:datetime',
-                            ],
-                        ]) ?>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Section: Attachments -->
-            <div class="col-md-4">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-secondary text-white">ไฟล์แนบ</div>
-                    <div class="card-body">
-                        <?php if (!empty($attachments)): ?>
-                            <ul class="list-group">
-                                <?php foreach ($attachments as $attachment): ?>
-                                    <li class="d-flex justify-content-between align-items-center">
-                                        <?= Html::a(
-                                            basename($attachment->file_path),
-                                            ['download', 'path' => $attachment->file_path],
-                                            ['class' => 'text-decoration-none', 'title' => 'ดาวน์โหลดไฟล์นี้']
-                                        ) ?>
-                                    </li>
-                                <?php endforeach; ?>
-                            </ul>
-                        <?php else: ?>
-                            <p class="text-muted">ไม่มีไฟล์แนบ</p>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 🆕 ส่วนการมอบหมายคำร้อง -->
+        <!-- Right Section -->
+        <div class="col-md-4">
+            <!-- Attachments -->
             <div class="card shadow-sm mb-4">
-                <div class="card-header bg-info text-white">เจ้าหน้าที่ผู้รับคำร้อง</div>
+                <div class="card-header bg-secondary text-white">
+                    <i class="bi bi-paperclip me-2"></i>ไฟล์แนบ
+                </div>
                 <div class="card-body">
-                    <?php if ($model->status === 'pending' && Yii::$app->user->can('assignTicket')): ?>
-                        <?= Html::a('มอบหมายคำร้อง', ['assignments/create', 'ticket_id' => $model->id], ['class' => 'btn btn-primary mb-3']) ?>
+                    <?php if (!empty($attachments)): ?>
+                        <ul class="list-group">
+                            <?php foreach ($attachments as $attachment): ?>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <i class="bi bi-file-earmark me-2"></i>
+                                    <?= Html::a(
+                                        basename($attachment->file_path),
+                                        ['download', 'path' => $attachment->file_path],
+                                        ['class' => 'text-decoration-none']
+                                    ) ?>
+                                    <span class="badge bg-primary rounded-pill">
+                                        <?= strtoupper($attachment->file_type) ?>
+                                    </span>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php else: ?>
+                        <p class="text-muted text-center mb-0">
+                            <i class="bi bi-info-circle me-2"></i>ไม่มีไฟล์แนบ
+                        </p>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <!-- Assignments -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-info text-white">
+                    <i class="bi bi-person-check-fill me-2"></i>การมอบหมายงาน
+                </div>
+                <div class="card-body">
+                    <?php if (Yii::$app->user->can('assignTicket') && in_array($model->status, ['approved', 'pending'])): ?>
+                        <?= Html::a(
+                            '<i class="bi bi-plus-circle"></i> มอบหมายคำร้อง',
+                            ['/assignments/create', 'ticket_id' => $model->id],
+                            ['class' => 'btn btn-primary mb-3 w-100']
+                        )
+                        ?>
                     <?php endif; ?>
 
-                    <h5>ประวัติการมอบหมาย</h5>
-                    <ul class="list-group">
-                        <?php foreach ($model->assignments as $assignment): ?>
-                            <li class="list-group-item">
-                                <strong>มอบหมายให้:</strong> <?= Html::encode($assignment->assignedTo->name) ?> |
-                                <strong>โดย:</strong> <?= Html::encode($assignment->assignedBy->name) ?> |
-                                <strong>สถานะ:</strong> <?= Html::encode($assignment->status) ?> |
-                                <strong>วันที่มอบหมาย:</strong> <?= Html::encode($assignment->assigned_at) ?>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
+                    <?php if (!empty($model->assignments)): ?>
+                        <div class="assignments-history">
+                            <?php foreach ($model->assignments as $assignment): ?>
+                                <div class="assignment-item border-bottom pb-2 mb-2">
+                                    <div>
+                                        <i class="bi bi-person-fill me-1"></i>
+                                        <strong>ผู้รับมอบหมาย:</strong>
+                                        <?= Html::encode($assignment->assignedTo->name) ?>
+                                    </div>
+                                    <div class="text-muted small">
+                                        <i class="bi bi-calendar2 me-1"></i>
+                                        <?= Yii::$app->formatter->asDatetime($assignment->assigned_at) ?>
+                                    </div>
+                                    <div>
+                                        <span class="badge bg-<?= $assignment->status === 'completed' ? 'success' : ($assignment->status === 'in_progress' ? 'info' : 'warning') ?>">
+                                            <?= Html::encode($assignment->status) ?>
+                                        </span>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php else: ?>
+                        <p class="text-muted text-center mb-0">
+                            <i class="bi bi-info-circle me-2"></i>ยังไม่มีการมอบหมายงาน
+                        </p>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const fileUpload = document.getElementById('fileUpload');
-            const fileList = document.getElementById('fileList');
-
-            fileUpload.addEventListener('change', function() {
-                fileList.innerHTML = ''; // ล้างรายการไฟล์ก่อน
-
-                if (fileUpload.files.length > 0) {
-                    const ul = document.createElement('ul');
-                    ul.classList.add('list-group');
-
-                    Array.from(fileUpload.files).forEach(file => {
-                        const li = document.createElement('li');
-                        li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
-                        li.innerHTML = `
-                    <span><i class="fas fa-file-alt"></i> ${file.name}</span>
-                    <span class="badge bg-success">${(file.size / 1024).toFixed(2)} KB</span>
-                `;
-                        ul.appendChild(li);
-                    });
-
-                    fileList.appendChild(ul);
-                } else {
-                    fileList.innerHTML = `<p class="text-muted">ยังไม่มีไฟล์ที่เลือก</p>`;
-                }
-            });
-        });
-    </script>
-</body>
+</div>

@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $model app\models\Assignments */
 /* @var $users app\models\Users[] */
 
-$this->title = 'Create Assignments';
+$this->title = 'มอบหมายคำร้อง';
 ?>
 <div class="assignments-create">
     <h1><?= Html::encode($this->title) ?></h1>

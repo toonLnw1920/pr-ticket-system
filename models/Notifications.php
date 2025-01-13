@@ -32,24 +32,23 @@ class Notifications extends \yii\db\ActiveRecord
     {
         return [
             [['user_id', 'message'], 'required'],
-            [['user_id', 'is_read'], 'integer'],
-            [['message'], 'string'],
-            [['created_at'], 'safe'],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['user_id' => 'id']],
+            ['user_id', 'integer'],
+            ['message', 'string'],
+            ['is_read', 'boolean'],
+            ['is_read', 'default', 'value' => 0],
+            ['created_at', 'safe'],
+            ['user_id', 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function attributeLabels()
     {
         return [
             'id' => 'ID',
-            'user_id' => 'User ID',
-            'message' => 'Message',
-            'is_read' => 'Is Read',
-            'created_at' => 'Created At',
+            'user_id' => 'ผู้ใช้',
+            'message' => 'ข้อความ',
+            'is_read' => 'อ่านแล้ว',
+            'created_at' => 'วันที่สร้าง',
         ];
     }
 

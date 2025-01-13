@@ -5,14 +5,16 @@ namespace app\controllers;
 use Yii;
 use app\models\Tickets;
 use app\models\TicketsSearch;
-use yii\web\Controller;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use app\models\Attachments;
-use yii\web\ForbiddenHttpException;
-use yii\filters\AccessControl;
 use app\models\Assignments;
 use app\models\Users;
+use app\models\Notifications;
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+use yii\web\ForbiddenHttpException;
+use yii\web\MethodNotAllowedHttpException;
+use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 
 /**
@@ -29,17 +31,28 @@ class TicketsController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['index', 'view', 'create', 'update', 'delete'], // กำหนด action ที่ต้องการควบคุม
+                'only' => ['index', 'view', 'create', 'update', 'delete'],
                 'rules' => [
                     [
-                        'actions' => ['login'], // อนุญาตให้เข้าถึง action login ได้เท่านั้น
+                        'actions' => ['login'],
                         'allow' => true,
-                        'roles' => ['?'], // '?' หมายถึง Guest หรือผู้ที่ยังไม่ได้ Login
+                        'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['index', 'view', 'create', 'update', 'delete'], // อนุญาตเฉพาะ user ที่ login แล้ว
+                        'actions' => ['index', 'view', 'create'],
                         'allow' => true,
-                        'roles' => ['@'], // '@' หมายถึง ผู้ที่ Login แล้ว
+                        'roles' => ['@'],
+                    ],
+                    [
+                        'actions' => ['update', 'delete'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                        'matchCallback' => function ($rule, $action) {
+                            $id = Yii::$app->request->get('id');
+                            $ticket = $this->findModel($id);
+                            return Yii::$app->user->identity->role === 'admin' ||
+                                $ticket->user_id === Yii::$app->user->id;
+                        }
                     ],
                 ],
             ],
@@ -169,16 +182,13 @@ class TicketsController extends Controller
 
     /**
      * Updates an existing Tickets model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param int $id ID
-     * @return string|\yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
         $attachmentModel = new Attachments();
 
+        // ตรวจสอบสิทธิ์ (admin หรือเจ้าของคำร้อง)
         if (Yii::$app->user->identity->role !== 'admin' && $model->user_id !== Yii::$app->user->id) {
             throw new ForbiddenHttpException('คุณไม่มีสิทธิ์แก้ไขคำร้องนี้');
         }
@@ -194,8 +204,6 @@ class TicketsController extends Controller
 
                 foreach ($uploadedFiles as $file) {
                     $fileName = $file->baseName . '.' . $file->extension;
-
-                    // ตรวจสอบชื่อไฟล์ซ้ำ
                     $counter = 1;
                     while (file_exists($uploadPath . $fileName)) {
                         $fileName = $file->baseName . '_' . $counter . '.' . $file->extension;
@@ -232,21 +240,28 @@ class TicketsController extends Controller
 
     /**
      * Deletes an existing Tickets model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $id ID
-     * @return \yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
 
-        // ตรวจสอบสิทธิ์เฉพาะ admin เท่านั้น
-        if (Yii::$app->user->identity->role !== 'admin') {
+        // ตรวจสอบสิทธิ์ (admin หรือเจ้าของคำร้อง)
+        if (Yii::$app->user->identity->role !== 'admin' && $model->user_id !== Yii::$app->user->id) {
             throw new ForbiddenHttpException('คุณไม่มีสิทธิ์ลบคำร้องนี้');
         }
 
+        // ลบไฟล์แนบทั้งหมดที่เกี่ยวข้อง
+        $attachments = Attachments::findAll(['ticket_id' => $id]);
+        foreach ($attachments as $attachment) {
+            $filePath = Yii::getAlias('@webroot/') . $attachment->file_path;
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+            $attachment->delete();
+        }
+
         $model->delete();
+        Yii::$app->session->setFlash('success', 'ลบคำร้องเรียบร้อยแล้ว');
 
         return $this->redirect(['index']);
     }
@@ -298,6 +313,53 @@ class TicketsController extends Controller
         ]);
     }
 
+    public function actionChangeStatus($id)
+    {
+        $model = $this->findModel($id);
+
+        // ตรวจสอบสิทธิ์
+        if (!Yii::$app->user->can('manageTickets')) {
+            throw new ForbiddenHttpException('คุณไม่มีสิทธิ์เปลี่ยนสถานะคำร้องนี้');
+        }
+
+        if ($this->request->isPost) {
+            $status = Yii::$app->request->post('status');
+            $validStatuses = ['pending', 'approved', 'rejected', 'in_progress', 'completed'];
+
+            if (in_array($status, $validStatuses)) {
+                $model->status = $status;
+                $model->updated_at = date('Y-m-d H:i:s');
+
+                try {
+                    if ($model->save()) {
+                        // สร้างการแจ้งเตือน
+                        $notification = new Notifications();
+                        $notification->user_id = $model->user_id;
+                        $notification->message = "คำร้องของคุณ \"{$model->title}\" มีการเปลี่ยนสถานะเป็น " . $model->getStatusLabel();
+
+                        if ($notification->save()) {
+                            Yii::$app->session->setFlash('success', 'เปลี่ยนสถานะคำร้องเรียบร้อยแล้ว');
+                        } else {
+                            Yii::error('Notification save error: ' . json_encode($notification->getErrors()));
+                            // ยังให้ผ่านไปได้แม้การแจ้งเตือนจะไม่สำเร็จ
+                            Yii::$app->session->setFlash('success', 'เปลี่ยนสถานะคำร้องเรียบร้อยแล้ว แต่ไม่สามารถสร้างการแจ้งเตือนได้');
+                        }
+                    } else {
+                        Yii::error('Ticket status update error: ' . json_encode($model->getErrors()));
+                        Yii::$app->session->setFlash('error', 'เกิดข้อผิดพลาด: ' . implode(', ', $model->getFirstErrors()));
+                    }
+                } catch (\Exception $e) {
+                    Yii::error('Exception while updating ticket status: ' . $e->getMessage());
+                    Yii::$app->session->setFlash('error', 'เกิดข้อผิดพลาดในระบบ: ' . $e->getMessage());
+                }
+            } else {
+                Yii::$app->session->setFlash('error', 'สถานะที่เลือกไม่ถูกต้อง');
+            }
+            return $this->redirect(['view', 'id' => $id]);
+        }
+
+        throw new MethodNotAllowedHttpException('Invalid request method.');
+    }
 
     protected function findModel($id)
     {

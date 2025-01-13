@@ -1,0 +1,32 @@
+/* สไตล์สำหรับรายการไฟล์แนบ */
+.tickets-view .list-group-item {
+    border: 1px solid #dee2e6; /* กำหนดเส้นขอบ */
+    border-radius: 5px; /* มุมโค้งเล็กน้อย */
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+/* ปิดการเปลี่ยนสีลิงก์เมื่อ Hover */
+.tickets-view .list-group-item a.btn-link {
+    color: #0d6efd; /* สีน้ำเงินมาตรฐาน */
+    text-decoration: none; /* ปิดขีดเส้นใต้ */
+}
+
+.tickets-view .list-group-item a.btn-link:hover {
+    color: #0d6efd; /* คงสีเดิมไว้เมื่อ Hover */
+    text-decoration: underline; /* แสดงขีดเส้นใต้เมื่อชี้ */
+}
+
+/* ปรับแต่ง Badge */
+.tickets-view .list-group-item .badge {
+    font-size: 0.9rem;
+    padding: 5px 10px;
+}
+
+.table td {
+    vertical-align: top; /* ชิดข้อความด้านบน */
+    text-align: center; /* ชิดซ้าย */
+}
+
+.table td:nth-child(4) { /* เฉพาะคำอธิบาย */
+    white-space: pre-wrap; /* ข้อความยาวขึ้นบรรทัดใหม่ */
+}

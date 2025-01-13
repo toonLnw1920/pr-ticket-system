@@ -1,0 +1,438 @@
+* {
+    box-sizing: border-box;
+  }
+
+main > .container {
+    /*padding: 70px 15px 20px;*/
+}
+
+.footer {
+    background-color: #f5f5f5;
+    font-size: .9em;
+    height: 60px;
+}
+
+.footer > .container {
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+.not-set {
+    color: #c55;
+    font-style: italic;
+}
+
+/* add sorting icons to gridview sort links */
+a.asc:after, a.desc:after {
+    content: '';
+    left: 3px;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border: solid 5px transparent;
+    margin: 4px 4px 2px 4px;
+    background: transparent;
+}
+
+a.asc:after {
+    border-bottom: solid 7px #212529;
+    border-top-width: 0;
+}
+
+a.desc:after {
+    border-top: solid 7px #212529;
+    border-bottom-width: 0;
+}
+
+.grid-view th {
+    white-space: nowrap;
+}
+
+.hint-block {
+    display: block;
+    margin-top: 5px;
+    color: #999;
+}
+
+.error-summary {
+    color: #a94442;
+    background: #fdf7f7;
+    border-left: 3px solid #eed3d7;
+    padding: 10px 20px;
+    margin: 0 0 15px 0;
+}
+
+/* align the logout "link" (button in form) of the navbar */
+.nav li > form > button.logout {
+    padding-top: 7px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+@media(max-width:767px) {
+    .nav li > form > button.logout {
+        display:block;
+        text-align: left;
+        width: 100%;
+        padding: 10px 0;
+    }
+}
+
+.nav > li > form > button.logout:focus,
+.nav > li > form > button.logout:hover {
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.nav > li > form > button.logout:focus {
+    outline: none;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+/* Sidebar */
+.sidebar-heading {
+    background-color: #a73b24; /* ใช้สีแดงเดียวกับ Navbar */
+    color: white; /* สีตัวอักษร */
+    padding: 10px; /* เว้นระยะห่าง */
+    text-align: center; /* จัดข้อความให้อยู่กลาง */
+    font-weight: bold; /* ทำให้ตัวอักษรหนา */
+    font-size: 1.25rem; /* ปรับขนาดตัวอักษร */
+    margin-bottom: auto; /* เพิ่มระยะห่างด้านล่าง */
+    
+}
+
+.sidebar-divider {
+    background-color: dark; /* สีพื้นหลังส่วนข้อความ */
+    color: #848b93;
+    padding: 10px 10px; /* ระยะห่างภายใน */
+    text-align: center; /* จัดข้อความให้อยู่ตรงกลาง */
+    font-size: 1rem; /* ขนาดตัวอักษรที่เหมาะสม */
+    font-weight: bold; /* ทำให้ตัวอักษรหนา */
+    letter-spacing: 0.5px; /* ระยะห่างระหว่างตัวอักษร */
+    margin-bottom: 20px; /* เพิ่มระยะห่างด้านล่าง */
+}
+
+#wrapper {
+    display: flex;
+    flex-direction: row;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+#sidebar-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 250px;
+    background-color: #343a40;
+    transition: all 0.3s;
+    overflow-y: auto;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    margin-left: -250px;
+}
+
+#page-content-wrapper {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+    transition: all 0.3s;
+}
+
+#wrapper.toggled #page-content-wrapper {
+    margin-left: 0;
+    width: 100%;
+}
+
+.sidebar-heading {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.list-group-item {
+    display: flex;
+    align-items: center; /* จัดไอคอนและข้อความให้อยู่ตรงกลาง */
+    gap: 12px; /* เพิ่มช่องว่างระหว่างไอคอนกับข้อความ */
+    font-size: 1rem; /* ขนาดตัวอักษร */
+    color: #f8f9fa; /* สีข้อความ */
+    background-color: #343a40; /* สีพื้นหลัง */
+    border: none; /* ลบเส้นขอบ */
+    padding: 12px 20px; /* เพิ่ม Padding ภายใน */
+    transition: all 0.3s ease-in-out; /* เพิ่ม transition */
+}
+
+.list-group-item:hover {
+    background-color: #6c757d; /* เปลี่ยนสีพื้นหลังเมื่อ Hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* เพิ่มเงา */
+    color: #ffffff; /* สีตัวอักษรเมื่อ Hover */
+}
+
+/* Navbar Styles */
+.navbar {
+    padding: 0.5rem 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar .container-fluid {
+    padding: 0 15px;
+}
+
+/* Sidebar Toggle Button */
+#sidebarToggle {
+    color: white;
+    border: none;
+    padding: 0.5rem;
+    background: transparent;
+    transition: background-color 0.2s ease;
+}
+
+#sidebarToggle:hover {
+    background-color: rgba(255,255,255,0.1);
+    border-radius: 4px;
+}
+
+/* User Display Styles */
+.user-mobile {
+    font-size: 0.9rem;
+    font-weight: 500;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Dropdown Styles */
+.dropdown-menu {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    margin-top: 0.5rem;
+}
+
+.dropdown-item {
+    padding: 0.5rem 1.5rem;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.dropdown-divider {
+    margin: 0.5rem 0;
+    opacity: 0.1;
+}
+
+/* Mobile Styles */
+@media (max-width: 991px) {
+    .navbar-collapse {
+        background-color: #a73b24;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        left: 0;
+        padding: 1rem;
+        z-index: 1000;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .dropdown-menu {
+        background-color: transparent;
+        border: none;
+        box-shadow: none;
+        padding: 0.5rem 0;
+    }
+
+    .dropdown-item {
+        color: white;
+        text-align: center;
+        padding: 0.5rem;
+    }
+
+    .dropdown-item:hover {
+        background-color: rgba(255,255,255,0.1);
+        color: white;
+    }
+
+    .navbar-toggler {
+        border: none;
+        color: white;
+        padding: 0.25rem 0.5rem;
+        outline: none;
+    }
+
+    .navbar-toggler:focus {
+        box-shadow: none;
+    }
+}
+
+/* Extra Small Devices */
+@media (max-width: 575px) {
+    .navbar {
+        padding: 0.5rem;
+    }
+
+    .user-mobile {
+        font-size: 0.85rem;
+        max-width: 120px;
+    }
+
+    .dropdown-item {
+        font-size: 0.9rem;
+    }
+}
+
+/* แบบฟอร์ม */
+.tickets-form {
+    background-color: #f8f8f8; /* สีพื้นหลัง */
+    border: 1px solid #e0e0e0; /* เส้นขอบสีเทา */
+    padding: 80px;
+    border-radius: 10px;
+    max-width: 800px; /* ความกว้างฟอร์ม */
+    margin: 20px auto;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.tickets-form .form-group {
+    margin-bottom: 40px;
+}
+
+.tickets-form label {
+    font-weight: bold;
+}
+
+.tickets-form input, 
+.tickets-form textarea, 
+.tickets-form select {
+    background-color: #fdfdfd;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.tickets-form input::placeholder,
+.tickets-form textarea::placeholder {
+    color: #bfbfbf;
+}
+
+.tickets-form button {
+    padding: 10px 45px;
+    font-size: 18px;
+    border-radius: 5px;
+    
+}
+
+.tickets-form .btn-success {
+    background-color: #4CAF50; /* ปุ่มสีเขียว */
+    border: none;
+    color: white;
+    display: inline-block; /* ปุ่มยังคงแสดงเป็นบล็อก */
+    margin: 5px auto; /* ระยะห่างจากด้านบนและล่าง */
+    
+}
+
+.tickets-form .btn-success:hover {
+    background-color: #45a049;
+    
+}
+
+.tickets-form .btn-secondary {
+    background-color: #ccc;
+    border: none;
+    color: #333;
+}
+
+.tickets-form .btn-secondary:hover {
+    background-color: #bfbfbf;
+}
+
+.form-actions {
+    text-align: center;
+    margin: 10px;
+    
+}
+
+/* ช่องอัปโหลดไฟล์ */
+.file-upload-container {
+    width: 100%;
+    height: 150px; /* กำหนดความสูงแบบตายตัว */
+    border: 2px dashed #ccc;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 20px; /* เพิ่มระยะห่างด้านล่าง */
+    background-color: #f8f9fa;
+    overflow: hidden; /* ป้องกันเนื้อหาล้นออกนอกกรอบ */
+}
+
+.file-upload-input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 1; /* ให้ input อยู่ด้านบนแต่อยู่ใต้ label */
+}
+
+.file-upload-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #666;
+    pointer-events: none;
+    z-index: 2; /* ให้ label อยู่ด้านบนสุด */
+}
+
+.upload-icon::before {
+    content: "\f093";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+/* จัดการตาราง GridView */
+.table th {
+    background-color: #f8f9fa; /* พื้นหลังหัวตาราง */
+    text-align: center;        /* จัดข้อความตรงกลาง */
+    font-weight: bold;
+    color: #333;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f1f1; /* เปลี่ยนสีพื้นหลังเมื่อ hover */
+}
+
+.table td {
+    vertical-align: middle;
+    text-align: center;
+}
+
+/* ปุ่มใน ActionColumn */
+.btn-sm {
+    margin-right: 5px;
+    font-size: 14px;
+    padding: 5px 10px;
+}
+
+/* ปุ่มเพิ่มคำร้อง */
+.btn-success {
+    background-color: #4CAF50; /* สีเขียวเข้ม */
+    border-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+}
+
+.btn-success:hover {
+    background-color: #45a049;
+    border-color: #45a049;
+}

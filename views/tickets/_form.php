@@ -9,6 +9,7 @@ use yii\jui\DatePicker;
 /** @var yii\widgets\ActiveForm $form */
 
 $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+$this->registerCssFile('@web/css/_form.css', ['depends' => [yii\bootstrap5\BootstrapAsset::class]]);
 ?>
 
 <div class="tickets-form">

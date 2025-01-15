@@ -19,6 +19,14 @@ $this->registerMetaTag(['name' => 'viewport', 'content' => 'width=device-width, 
 $this->registerMetaTag(['name' => 'description', 'content' => $this->params['meta_description'] ?? '']);
 $this->registerMetaTag(['name' => 'keywords', 'content' => $this->params['meta_keywords'] ?? '']);
 $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii::getAlias('@web/favicon.ico')]);
+$this->registerLinkTag([
+    'rel' => 'stylesheet',
+    'href' => 'https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&display=swap'
+]);
+$this->registerLinkTag([
+    'rel' => 'stylesheet',
+    'href' => 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'
+]);
 ?>
 <?php $this->beginPage() ?>
 
@@ -49,17 +57,17 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
                 <?php if (!Yii::$app->user->isGuest): ?>
                     <?php if (Yii::$app->user->identity->role === 'admin'): ?>
                         <!-- Sidebar สำหรับ Admin -->
-                        <?= Html::a('Dashboard', ['/site/dashboard'], ['class' => 'list-group-item list-group-item-action bg-dark text-white']) ?>
-                        <?= Html::a('จัดการคำร้อง', ['/tickets/index'], ['class' => 'list-group-item list-group-item-action bg-dark text-white']) ?>
-                        <?= Html::a('Calendar', ['/calendar/index'], ['class' => 'list-group-item list-group-item-action bg-dark text-white']) ?>
+                        <?= Html::a('<i class="fas fa-tachometer-alt me-2"></i>Dashboard', ['/site/dashboard'], ['class' => 'list-group-item list-group-item-action bg-dark text-white']) ?>
+                        <?= Html::a('<i class="fas fa-ticket-alt me-2"></i>จัดการคำร้อง', ['/tickets/index'], ['class' => 'list-group-item list-group-item-action bg-dark text-white']) ?>
+                        <?= Html::a('<i class="far fa-calendar-alt me-2"></i>Calendar', ['/calendar/index'], ['class' => 'list-group-item list-group-item-action bg-dark text-white']) ?>
                     <?php else: ?>
                         <!-- Sidebar สำหรับ User -->
-                        <?= Html::a('คำร้องทั้งหมด', ['/tickets/index'], ['class' => 'list-group-item list-group-item-action bg-dark text-white']) ?>
-                        <?= Html::a('Reports', ['/site/reports'], ['class' => 'list-group-item list-group-item-action bg-dark text-white']) ?>
+                        <?= Html::a('<i class="fas fa-ticket-alt me-2"></i>คำร้องทั้งหมด', ['/tickets/index'], ['class' => 'list-group-item list-group-item-action bg-dark text-white']) ?>
+                        <?= Html::a('<i class="far fa-chart-bar me-2"></i>Reports', ['/site/reports'], ['class' => 'list-group-item list-group-item-action bg-dark text-white']) ?>
                     <?php endif; ?>
                 <?php else: ?>
                     <!-- สำหรับผู้ที่ยังไม่ล็อกอิน -->
-                    <?= Html::a('Login', ['/site/login'], ['class' => 'list-group-item list-group-item-action bg-dark text-white']) ?>
+                    <?= Html::a('<i class="fas fa-sign-in-alt me-2"></i>Login', ['/site/login'], ['class' => 'list-group-item list-group-item-action bg-dark text-white']) ?>
                 <?php endif; ?>
             </div>
         </div>
@@ -84,11 +92,11 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
                             <?php if (!Yii::$app->user->isGuest): ?>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <?= Html::encode(Yii::$app->user->identity->name) ?>
+                                        <i class="fas fa-user me-2"></i><?= Html::encode(Yii::$app->user->identity->name) ?>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                        <li><?= Html::a('Profile', ['/site/profile'], ['class' => 'dropdown-item']) ?></li>
-                                        <li><?= Html::a('Logout', ['/site/logout'], [
+                                        <li><?= Html::a('<i class="fas fa-user-circle me-2"></i>Profile', ['/site/profile'], ['class' => 'dropdown-item']) ?></li>
+                                        <li><?= Html::a('<i class="fas fa-sign-out-alt me-2"></i>Logout', ['/site/logout'], [
                                                 'class' => 'dropdown-item',
                                                 'data-method' => 'post'
                                             ]) ?></li>
@@ -96,7 +104,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
                                 </li>
                             <?php else: ?>
                                 <li class="nav-item">
-                                    <?= Html::a('Login', ['/site/login'], ['class' => 'btn text-white']) ?>
+                                    <?= Html::a('<i class="fas fa-sign-in-alt me-2"></i>Login', ['/site/login'], ['class' => 'btn text-white']) ?>
                                 </li>
                             <?php endif; ?>
                         </ul>

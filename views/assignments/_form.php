@@ -90,7 +90,7 @@ use yii\helpers\ArrayHelper;
 
 .assignments-form .form-label {
     font-weight: 500;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 .assignments-form .form-select,

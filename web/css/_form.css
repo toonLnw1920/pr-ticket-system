@@ -1,0 +1,151 @@
+/* แบบฟอร์ม */
+.tickets-form {
+    background-color: #f8f8f8; /* สีพื้นหลัง */
+    border: 1px solid #e0e0e0; /* เส้นขอบสีเทา */
+    padding: 80px;
+    border-radius: 10px;
+    max-width: 800px; /* ความกว้างฟอร์ม */
+    margin: 20px auto;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.tickets-form .form-group {
+    margin-bottom: 40px;
+}
+
+.tickets-form label {
+    font-weight: bold;
+}
+
+.tickets-form input, 
+.tickets-form textarea, 
+.tickets-form select {
+    background-color: #fdfdfd;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.tickets-form input::placeholder,
+.tickets-form textarea::placeholder {
+    color: #bfbfbf;
+}
+
+.tickets-form button {
+    padding: 10px 45px;
+    font-size: 18px;
+    border-radius: 5px;
+    
+}
+
+.tickets-form .btn-success {
+    background-color: #4CAF50; /* ปุ่มสีเขียว */
+    border: none;
+    color: white;
+    display: inline-block; /* ปุ่มยังคงแสดงเป็นบล็อก */
+    margin: 5px auto; /* ระยะห่างจากด้านบนและล่าง */
+    
+}
+
+.tickets-form .btn-success:hover {
+    background-color: #45a049;
+    
+}
+
+.tickets-form .btn-secondary {
+    background-color: #ccc;
+    border: none;
+    color: #333;
+}
+
+.tickets-form .btn-secondary:hover {
+    background-color: #bfbfbf;
+}
+
+.form-actions {
+    text-align: center;
+    margin: 10px;
+    
+}
+
+/* ช่องอัปโหลดไฟล์ */
+.file-upload-container {
+    width: 100%;
+    height: 150px; /* กำหนดความสูงแบบตายตัว */
+    border: 2px dashed #ccc;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 20px; /* เพิ่มระยะห่างด้านล่าง */
+    background-color: #f8f9fa;
+    overflow: hidden; /* ป้องกันเนื้อหาล้นออกนอกกรอบ */
+}
+
+.file-upload-input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 1; /* ให้ input อยู่ด้านบนแต่อยู่ใต้ label */
+}
+
+.file-upload-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #666;
+    pointer-events: none;
+    z-index: 2; /* ให้ label อยู่ด้านบนสุด */
+}
+
+.upload-icon::before {
+    content: "\f093";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+/* จัดการตาราง GridView */
+.table th {
+    background-color: #f8f9fa; /* พื้นหลังหัวตาราง */
+    text-align: center;        /* จัดข้อความตรงกลาง */
+    font-weight: bold;
+    color: #333;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f1f1; /* เปลี่ยนสีพื้นหลังเมื่อ hover */
+}
+
+.table td {
+    vertical-align: middle;
+    text-align: center;
+}
+
+/* ปุ่มใน ActionColumn */
+.btn-sm {
+    margin-right: 5px;
+    font-size: 14px;
+    padding: 5px 10px;
+}
+
+/* ปุ่มเพิ่มคำร้อง */
+.btn-success {
+    background-color: #4CAF50; /* สีเขียวเข้ม */
+    border-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+}
+
+.btn-success:hover {
+    background-color: #45a049;
+    border-color: #45a049;
+}

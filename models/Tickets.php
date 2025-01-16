@@ -15,6 +15,7 @@ use yii\web\UploadedFile;
  * @property string $category
  * @property string|null $status
  * @property string|null $priority
+ * @property string|null $service_date
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -37,16 +38,18 @@ class Tickets extends \yii\db\ActiveRecord
      * {@inheritdoc}
      */
     public $uploadedFiles; // ฟิลด์ชั่วคราวสำหรับอัปโหลดไฟล์
+    //public $service_date;
 
     public function rules()
     {
         return [
-            [['title', 'description', 'category'], 'required'],
+            [['title', 'description', 'category', 'service_date'], 'required'],
             [['user_id'], 'integer'],
             [['description'], 'string'],
+            [['service_date'], 'date', 'format' => 'php:Y-m-d'], // เพิ่ม validation สำหรับ service_date
             [['category'], 'string'],
             [['status'], 'string'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['created_at', 'updated_at', 'service_date'], 'safe'],
             ['status', 'default', 'value' => 'pending'],
             ['status', 'in', 'range' => ['pending', 'approved', 'rejected', 'in_progress', 'completed']],
             [['title'], 'string', 'max' => 255],
@@ -70,6 +73,7 @@ class Tickets extends \yii\db\ActiveRecord
             'description' => 'คำอธิบาย',
             'category' => 'หมวดหมู่',
             'status' => 'สถานะ',
+            'service_date' => 'วันที่ขอใช้บริการ',
             'created_at' => 'วันที่สร้าง',
             'updated_at' => 'วันที่แก้ไข',
         ];

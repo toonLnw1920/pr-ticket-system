@@ -18,7 +18,7 @@ class TicketsSearch extends Tickets
     {
         return [
             [['id', 'user_id'], 'integer'],
-            [['title', 'description', 'category', 'status', 'created_at', 'updated_at'], 'safe'],
+            [['title', 'description', 'category', 'status', 'created_at', 'updated_at', 'service_date'], 'safe'],
         ];
     }
 

@@ -87,6 +87,12 @@ $this->title = 'คำร้องทั้งหมด';
                             'headerOptions' => ['class' => 'text-center'],
                         ],
                         [
+                            'attribute' => 'service_date',
+                            'format' => ['date', 'php:d/m/Y'],
+                            'contentOptions' => ['style' => 'min-width: 100px; text-align: center;'],
+                            'headerOptions' => ['class' => 'text-center'],
+                        ],
+                        [
                             'attribute' => 'created_at',
                             'format' => ['date', 'php:d/m/Y'],
                             'contentOptions' => ['style' => 'min-width: 100px; text-align: center;'],

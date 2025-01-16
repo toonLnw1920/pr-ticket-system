@@ -1,4 +1,5 @@
 <?php
+
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
@@ -34,7 +35,7 @@ $this->title = 'Dashboard';
                 </div>
             </div>
         </div>
-        
+
         <div class="col-sm-6 col-xl-3 mb-3">
             <div class="card shadow-sm h-100">
                 <div class="card-body">
@@ -50,7 +51,7 @@ $this->title = 'Dashboard';
                 </div>
             </div>
         </div>
-        
+
         <div class="col-sm-6 col-xl-3 mb-3">
             <div class="card shadow-sm h-100">
                 <div class="card-body">
@@ -66,7 +67,7 @@ $this->title = 'Dashboard';
                 </div>
             </div>
         </div>
-        
+
         <div class="col-sm-6 col-xl-3 mb-3">
             <div class="card shadow-sm h-100">
                 <div class="card-body">
@@ -99,56 +100,69 @@ $this->title = 'Dashboard';
                             <th style="min-width: 200px;">ชื่อคำร้อง</th>
                             <th style="min-width: 120px;" class="text-center">หมวดหมู่</th>
                             <th style="min-width: 140px;" class="text-center">สถานะ</th>
+                            <th style="min-width: 120px;" class="text-center">วันที่ขอใช้บริการ</th>
                             <th style="min-width: 100px;" class="text-center">วันที่สร้าง</th>
                             <th style="min-width: 150px;" class="text-center">ดำเนินการ</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($latestTickets as $index => $ticket): ?>
-                        <tr>
-                            <td class="text-center"><?= $index + 1 ?></td>
-                            <td class="text-center"><?= $ticket->id ?></td>
-                            <td><?= Html::encode($ticket->title) ?></td>
-                            <td class="text-center">
-                                <span class="badge bg-light text-dark">
-                                    <?= $ticket->getCategoryLabel() ?>
-                                </span>
-                            </td>
-                            <td class="text-center">
-                                <span class="badge <?= $ticket->getStatusBadgeClass() ?>">
-                                    <?= $ticket->getStatusLabel() ?>
-                                </span>
-                            </td>
-                            <td class="text-center">
-                                <?= Yii::$app->formatter->asDate($ticket->created_at, 'php:d/m/Y') ?>
-                            </td>
-                            <td>
-                                <div class="action-buttons">
-                                    <?= Html::a(
-                                        '<i class="bi bi-eye"></i>',
-                                        ['tickets/view', 'id' => $ticket->id],
-                                        ['class' => 'btn btn-primary btn-action', 'title' => 'ดูรายละเอียด']
-                                    ) ?>
-                                    <?php if (Yii::$app->user->identity->role === 'admin'): ?>
+                            <tr>
+                                <td class="text-center"><?= $index + 1 ?></td>
+                                <td class="text-center"><?= $ticket->id ?></td>
+                                <td><?= Html::encode($ticket->title) ?></td>
+                                <td class="text-center">
+                                    <span class="text-dark">
+                                        <?= $ticket->getCategoryLabel() ?>
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge <?= $ticket->getStatusBadgeClass() ?>">
+                                        <?= $ticket->getStatusLabel() ?>
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <?= $ticket->service_date ? Yii::$app->formatter->asDate($ticket->service_date, 'php:d/m/Y') : '-' ?>
+                                </td>
+                                <td class="text-center">
+                                    <?= Yii::$app->formatter->asDate($ticket->created_at, 'php:d/m/Y') ?>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
                                         <?= Html::a(
-                                            '<i class="bi bi-pencil"></i>',
-                                            ['tickets/update', 'id' => $ticket->id],
-                                            ['class' => 'btn btn-warning btn-action', 'title' => 'แก้ไข']
-                                        ) ?>
-                                        <?= Html::a(
-                                            '<i class="bi bi-trash"></i>',
-                                            ['tickets/delete', 'id' => $ticket->id],
+                                            '<i class="bi bi-eye"></i>',
+                                            ['tickets/view', 'id' => $ticket->id],
                                             [
-                                                'class' => 'btn btn-danger btn-action',
-                                                'title' => 'ลบ',
-                                                'data-method' => 'post',
-                                                'data-confirm' => 'คุณต้องการลบคำร้องนี้หรือไม่?'
+                                                'class' => 'btn btn-primary btn-action',
+                                                'title' => 'ดูรายละเอียด',
+                                                'data-bs-toggle' => 'tooltip',
                                             ]
                                         ) ?>
-                                    <?php endif; ?>
-                                </div>
-                            </td>
-                        </tr>
+                                        <?php if (Yii::$app->user->identity->role === 'admin'): ?>
+                                            <?= Html::a(
+                                                '<i class="bi bi-pencil"></i>',
+                                                ['tickets/update', 'id' => $ticket->id],
+                                                [
+                                                    'class' => 'btn btn-warning btn-action',
+                                                    'title' => 'แก้ไข',
+                                                    'data-bs-toggle' => 'tooltip',
+                                                ]
+                                            ) ?>
+                                            <?= Html::a(
+                                                '<i class="bi bi-trash"></i>',
+                                                ['tickets/delete', 'id' => $ticket->id],
+                                                [
+                                                    'class' => 'btn btn-danger btn-action',
+                                                    'title' => 'ลบ',
+                                                    'data-bs-toggle' => 'tooltip',
+                                                    'data-method' => 'post',
+                                                    'data-confirm' => 'คุณต้องการลบคำร้องนี้หรือไม่?'
+                                                ]
+                                            ) ?>
+                                        <?php endif; ?>
+                                    </div>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -157,119 +171,130 @@ $this->title = 'Dashboard';
     </div>
 </div>
 
+<?php
+$js = <<<JS
+// เปิดใช้งาน tooltips
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+});
+JS;
+$this->registerJs($js);
+?>
+
 <style>
-/* Card Styles */
-.card {
-    border: none;
-    border-radius: 15px;
-    transition: all 0.2s ease;
-}
+    /* Card Styles */
+    .card {
+        border: none;
+        border-radius: 15px;
+        transition: all 0.2s ease;
+    }
 
-.card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
 
 
-.stat-icon {
-    opacity: 0.8;
-}
+    .stat-icon {
+        opacity: 0.8;
+    }
 
-/* Table Styles */
-.table th {
-    background-color: #f8f9fa;
-    vertical-align: middle;
-    font-weight: 500;
-}
+    /* Table Styles */
+    .table th {
+        background-color: #f8f9fa;
+        vertical-align: middle;
+        font-weight: 500;
+    }
 
-.table td {
-    vertical-align: middle;
-}
+    .table td {
+        vertical-align: middle;
+    }
 
-/* Action Buttons */
-.action-buttons {
-    display: flex;
-    gap: 6px;
-    justify-content: center;
-    align-items: center;
-}
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+        align-items: center;
+    }
 
-.btn-action {
-    width: 32px;
-    height: 32px;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-}
+    .btn-action {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+    }
 
-.btn-action:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-}
+    .btn-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    }
 
-.btn-action i {
-    font-size: 14px;
-}
-
-/* Button Colors */
-.btn-primary.btn-action {
-    background-color: #3498db;
-    border-color: #3498db;
-}
-
-.btn-warning.btn-action {
-    background-color: #f1c40f;
-    border-color: #f1c40f;
-    color: #fff;
-}
-
-.btn-danger.btn-action {
-    background-color: #e74c3c;
-    border-color: #e74c3c;
-}
-
-/* Hover Effects */
-.btn-primary.btn-action:hover {
-    background-color: #2980b9;
-    border-color: #2980b9;
-}
-
-.btn-warning.btn-action:hover {
-    background-color: #f39c12;
-    border-color: #f39c12;
-    color: #fff;
-}
-
-.btn-danger.btn-action:hover {
-    background-color: #c0392b;
-    border-color: #c0392b;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .grid-view {
+    .btn-action i {
         font-size: 14px;
     }
-    
-    .btn-action {
-        width: 28px;
-        height: 28px;
+
+    /* Button Colors */
+    .btn-primary.btn-action {
+        background-color: #3498db;
+        border-color: #3498db;
     }
-    
-    .btn-action i {
-        font-size: 12px;
+
+    .btn-warning.btn-action {
+        background-color: #f1c40f;
+        border-color: #f1c40f;
+        color: #fff;
     }
-    
-    .action-buttons {
-        gap: 4px;
+
+    .btn-danger.btn-action {
+        background-color: #e74c3c;
+        border-color: #e74c3c;
     }
-    
-    .badge {
-        font-size: 12px;
+
+    /* Hover Effects */
+    .btn-primary.btn-action:hover {
+        background-color: #2980b9;
+        border-color: #2980b9;
     }
-}
+
+    .btn-warning.btn-action:hover {
+        background-color: #f39c12;
+        border-color: #f39c12;
+        color: #fff;
+    }
+
+    .btn-danger.btn-action:hover {
+        background-color: #c0392b;
+        border-color: #c0392b;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .grid-view {
+            font-size: 14px;
+        }
+
+        .btn-action {
+            width: 28px;
+            height: 28px;
+        }
+
+        .btn-action i {
+            font-size: 12px;
+        }
+
+        .action-buttons {
+            gap: 4px;
+        }
+
+        .badge {
+            font-size: 12px;
+        }
+    }
 </style>

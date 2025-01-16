@@ -80,11 +80,6 @@ $this->registerLinkTag([
                 <div class="container-fluid">
                     <div class="d-flex align-items-center">
                         <button class="btn" id="sidebarToggle">☰</button>
-                        <?php if (!Yii::$app->user->isGuest): ?>
-                            <span class="d-lg-none ms-2 text-white user-mobile">
-                                <?= Html::encode(Yii::$app->user->identity->name) ?>
-                            </span>
-                        <?php endif; ?>
                     </div>
 
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">

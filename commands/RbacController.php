@@ -56,6 +56,7 @@ class RbacController extends Controller
         $auth->addChild($admin, $viewTickets);
 
         $auth->addChild($supervisor, $viewTickets);
+        $auth->addChild($supervisor, $assignTicket);
 
         $auth->addChild($user, $viewTickets);
 

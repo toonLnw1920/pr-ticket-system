@@ -103,8 +103,10 @@ class AssignmentsController extends Controller
             throw new NotFoundHttpException('ไม่พบคำร้องที่ต้องการ');
         }
 
-        // ดึงรายชื่อผู้ใช้ที่มี role เป็น 'user'
-        $users = Users::find()->where(['role' => 'user'])->all();
+        // ดึงรายชื่อผู้ใช้ที่มี role เป็น admin หรือ supervisor
+        $users = Users::find()
+            ->where(['in', 'role', ['admin', 'supervisor']])
+            ->all();
 
         if ($model->load(Yii::$app->request->post())) {
             $model->ticket_id = $ticket_id;

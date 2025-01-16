@@ -149,3 +149,144 @@
     background-color: #45a049;
     border-color: #45a049;
 }
+
+/* Responsive Form Styles */
+@media (max-width: 992px) {
+    .tickets-form {
+        padding: 40px;
+        margin: 15px auto;
+    }
+
+    .tickets-form .form-group {
+        margin-bottom: 30px;
+    }
+    
+    .tickets-form button {
+        padding: 8px 35px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .tickets-form {
+        padding: 30px;
+        margin: 10px;
+        max-width: 100%;
+    }
+
+    .tickets-form .form-group {
+        margin-bottom: 25px;
+    }
+
+    /* ปรับขนาด input และ textarea */
+    .tickets-form input,
+    .tickets-form textarea,
+    .tickets-form select {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    /* ปรับขนาดปุ่ม */
+    .tickets-form button {
+        padding: 8px 30px;
+        font-size: 15px;
+        width: auto;
+    }
+}
+
+@media (max-width: 576px) {
+    .tickets-form {
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    .tickets-form .form-group {
+        margin-bottom: 20px;
+    }
+
+    /* ปรับฟอนต์และการแสดงผล label */
+    .tickets-form label {
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+
+    /* ปรับขนาด placeholder */
+    .tickets-form input::placeholder,
+    .tickets-form textarea::placeholder {
+        font-size: 13px;
+    }
+
+    /* ปรับความสูงของ textarea */
+    .tickets-form textarea {
+        min-height: 100px;
+    }
+
+    /* ปรับการแสดงผลของ file upload */
+    .file-upload-container {
+        height: 120px;
+    }
+
+    .upload-icon::before {
+        font-size: 20px;
+    }
+
+    /* ปรับขนาดปุ่ม */
+    .tickets-form button {
+        padding: 8px 25px;
+        font-size: 14px;
+        margin: 3px auto;
+    }
+
+    /* ปรับ margin ของ form actions */
+    .form-actions {
+        margin: 5px;
+    }
+}
+
+/* ปรับการแสดงผลสำหรับอุปกรณ์ขนาดเล็กมาก */
+@media (max-width: 360px) {
+    .tickets-form {
+        padding: 15px;
+    }
+
+    .tickets-form input,
+    .tickets-form textarea,
+    .tickets-form select {
+        padding: 6px;
+        font-size: 13px;
+    }
+
+    .tickets-form label {
+        font-size: 13px;
+    }
+
+    /* ปรับขนาดปุ่มให้เล็กลงอีก */
+    .tickets-form button {
+        padding: 6px 20px;
+        font-size: 13px;
+    }
+
+    /* ลดความสูงของ file upload container */
+    .file-upload-container {
+        height: 100px;
+    }
+}
+
+/* ปรับการแสดงผลของ DatePicker ให้ responsive */
+@media (max-width: 768px) {
+    .ui-datepicker {
+        width: 280px;
+    }
+    
+    .ui-datepicker table {
+        font-size: 13px;
+    }
+    
+    .ui-datepicker th {
+        padding: 5px;
+    }
+    
+    .ui-datepicker td {
+        padding: 1px;
+    }
+}

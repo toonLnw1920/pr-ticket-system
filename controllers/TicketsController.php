@@ -93,8 +93,10 @@ class TicketsController extends Controller
         // ดึงข้อมูลไฟล์แนบ
         $attachments = Attachments::find()->where(['ticket_id' => $id])->all();
 
-        // เพิ่มการดึงข้อมูล users
-        $users = Users::find()->where(['role' => 'user'])->all();
+        // แก้ไขการดึงข้อมูล users ให้เป็น admin และ supervisor
+        $users = Users::find()
+            ->where(['in', 'role', ['admin', 'supervisor']])
+            ->all();
 
         return $this->render('view', [
             'model' => $model,
@@ -127,6 +129,11 @@ class TicketsController extends Controller
             if ($model->load($this->request->post())) {
                 // กำหนด user_id ให้เป็นผู้ใช้ที่ล็อกอิน
                 $model->user_id = Yii::$app->user->id;
+
+                // แปลงรูปแบบวันที่
+                if (!empty($model->service_date)) {
+                    $model->service_date = Yii::$app->formatter->asDate($model->service_date, 'php:Y-m-d');
+                }
 
                 // จัดการไฟล์ที่อัปโหลด
                 $uploadedFiles = \yii\web\UploadedFile::getInstances($model, 'uploadedFiles');
@@ -193,42 +200,57 @@ class TicketsController extends Controller
             throw new ForbiddenHttpException('คุณไม่มีสิทธิ์แก้ไขคำร้องนี้');
         }
 
-        if ($model->load($this->request->post()) && $model->save()) {
-            $uploadedFiles = \yii\web\UploadedFile::getInstances($model, 'uploadedFiles');
-
-            if ($uploadedFiles) {
-                $uploadPath = Yii::getAlias('@webroot/uploads/');
-                if (!file_exists($uploadPath)) {
-                    mkdir($uploadPath, 0777, true);
-                }
-
-                foreach ($uploadedFiles as $file) {
-                    $fileName = $file->baseName . '.' . $file->extension;
-                    $counter = 1;
-                    while (file_exists($uploadPath . $fileName)) {
-                        $fileName = $file->baseName . '_' . $counter . '.' . $file->extension;
-                        $counter++;
-                    }
-
-                    $filePath = $uploadPath . $fileName;
-
-                    if ($file->saveAs($filePath)) {
-                        $attachment = new Attachments();
-                        $attachment->ticket_id = $model->id;
-                        $attachment->file_path = 'uploads/' . $fileName;
-                        $attachment->file_type = $file->extension;
-                        $attachment->uploaded_at = date('Y-m-d H:i:s');
-                        if (!$attachment->save()) {
-                            Yii::error('Error saving attachment: ' . json_encode($attachment->errors));
-                        }
-                    } else {
-                        Yii::$app->session->setFlash('error', 'ไม่สามารถอัปโหลดไฟล์ได้');
-                    }
-                }
+        if ($model->load($this->request->post())) {
+            // จัดการกับ service_date
+            if (!empty($model->service_date)) {
+                $model->service_date = Yii::$app->formatter->asDate($model->service_date, 'php:Y-m-d');
             }
 
-            Yii::$app->session->setFlash('success', 'แก้ไขคำร้องสำเร็จ!');
-            return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->save()) {
+                $uploadedFiles = \yii\web\UploadedFile::getInstances($model, 'uploadedFiles');
+
+                if ($uploadedFiles) {
+                    $uploadPath = Yii::getAlias('@webroot/uploads/');
+                    if (!file_exists($uploadPath)) {
+                        mkdir($uploadPath, 0777, true);
+                    }
+
+                    foreach ($uploadedFiles as $file) {
+                        $fileName = $file->baseName . '.' . $file->extension;
+                        $counter = 1;
+                        while (file_exists($uploadPath . $fileName)) {
+                            $fileName = $file->baseName . '_' . $counter . '.' . $file->extension;
+                            $counter++;
+                        }
+
+                        $filePath = $uploadPath . $fileName;
+
+                        if ($file->saveAs($filePath)) {
+                            $attachment = new Attachments();
+                            $attachment->ticket_id = $model->id;
+                            $attachment->file_path = 'uploads/' . $fileName;
+                            $attachment->file_type = $file->extension;
+                            $attachment->uploaded_at = date('Y-m-d H:i:s');
+                            if (!$attachment->save()) {
+                                Yii::error('Error saving attachment: ' . json_encode($attachment->errors));
+                            }
+                        } else {
+                            Yii::$app->session->setFlash('error', 'ไม่สามารถอัปโหลดไฟล์ได้');
+                        }
+                    }
+                }
+
+                Yii::$app->session->setFlash('success', 'แก้ไขคำร้องสำเร็จ!');
+                return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                // เพิ่ม debug เพื่อดูว่าเกิดข้อผิดพลาดอะไร
+                Yii::error('Error saving ticket: ' . json_encode($model->errors));
+            }
+        }
+
+        // ถ้ามี service_date อยู่แล้ว ให้แปลงเป็นรูปแบบที่ต้องการ
+        if (!empty($model->service_date)) {
+            $model->service_date = Yii::$app->formatter->asDate($model->service_date, 'php:Y-m-d');
         }
 
         return $this->render('update', [
@@ -287,7 +309,9 @@ class TicketsController extends Controller
             throw new \yii\web\ForbiddenHttpException('❌ คุณไม่มีสิทธิ์มอบหมายคำร้องนี้');
         }
 
-        if (Yii::$app->user->identity->role !== 'admin') {
+        // ตรวจสอบ role ว่าเป็น admin หรือ supervisor เท่านั้น
+        $userRole = Yii::$app->user->identity->role;
+        if (!in_array($userRole, ['admin', 'supervisor'])) {
             throw new ForbiddenHttpException('คุณไม่มีสิทธิ์มอบหมายคำร้องนี้');
         }
 
@@ -304,7 +328,10 @@ class TicketsController extends Controller
             }
         }
 
-        $users = Users::find()->where(['role' => 'user'])->all();
+        // ดึงรายชื่อผู้ใช้ที่เป็น admin หรือ supervisor เท่านั้น
+        $users = Users::find()
+            ->where(['in', 'role', ['admin', 'supervisor']])
+            ->all();
 
         return $this->render('assign', [
             'model' => $model,

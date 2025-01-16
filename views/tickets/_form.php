@@ -38,9 +38,18 @@ $this->registerCssFile('@web/css/_form.css', ['depends' => [yii\bootstrap5\Boots
     ], ['prompt' => 'เลือกประเภทคำร้อง'])->label('ประเภท') ?>
 
     <!-- วันที่ขอใช้บริการ -->
-    <?= $form->field($model, 'created_at')->widget(DatePicker::class, [
-        'dateFormat' => 'yyyy-MM-dd',
-        'options' => ['class' => 'form-control', 'placeholder' => 'DD/MM/YYYY'],
+    <?= $form->field($model, 'service_date')->widget(DatePicker::class, [
+        'dateFormat' => 'php:Y-m-d',
+        'options' => [
+            'class' => 'form-control',
+            'placeholder' => 'DD/MM/YYYY',
+            'autocomplete' => 'off'
+        ],
+        'clientOptions' => [
+            'changeMonth' => true,
+            'changeYear' => true,
+            'showButtonPanel' => true,
+        ],
     ])->label('วันที่ขอใช้บริการ') ?>
 
     <!-- อัปโหลดไฟล์ -->

@@ -32,10 +32,9 @@ class Calendar extends \yii\db\ActiveRecord
     {
         return [
             [['event_name', 'event_date', 'ticket_id'], 'required'],
-            [['event_date', 'created_at'], 'safe'],
+            [['event_date'], 'date', 'format' => 'php:Y-m-d'],
             [['ticket_id'], 'integer'],
             [['event_name'], 'string', 'max' => 255],
-            [['ticket_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tickets::class, 'targetAttribute' => ['ticket_id' => 'id']],
         ];
     }
 
@@ -46,10 +45,10 @@ class Calendar extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'event_name' => 'Event Name',
-            'event_date' => 'Event Date',
-            'ticket_id' => 'Ticket ID',
-            'created_at' => 'Created At',
+            'event_name' => 'ชื่อกิจกรรม',
+            'event_date' => 'วันที่',
+            'ticket_id' => 'รหัสคำขอ',
+            'created_at' => 'วันที่สร้าง',
         ];
     }
 
